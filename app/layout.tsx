@@ -1,6 +1,6 @@
-import '@/styles/layout.css'
+import React from 'react'
 import Layout from '@/components/Layout'
-
+import '@/styles/layout.css'
 
 export const metadata = {
   title: 'AgentClinic',

@@ -15,10 +15,13 @@
   gap: 0.5rem;
 }
 
-.site-header h1 {
+.site-brand {
+  color: white;
+  font-weight: 700;
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.2;
+  text-decoration: none;
 }
 
 .site-header nav {
@@ -75,6 +78,30 @@
   line-height: 1.6;
 }
 
+.dashboard-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.dashboard-card h3 {
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.dashboard-metric {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
 /* Tablet styles (768px+) */
 @media (min-width: 768px) {
   .site-header {
@@ -84,7 +111,7 @@
     padding: 1rem 2rem;
   }
 
-  .site-header h1 {
+  .site-brand {
     font-size: 1.5rem;
   }
 
@@ -111,6 +138,10 @@
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 /* Desktop styles (1024px+) */
@@ -119,7 +150,7 @@
     padding: 1rem 3rem;
   }
 
-  .site-header h1 {
+  .site-brand {
     font-size: 1.75rem;
   }
 
