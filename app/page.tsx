@@ -1,5 +1,8 @@
 import { db } from '@/lib/db/client'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   // Test database connection on server side
   const agentCount = db.prepare('SELECT COUNT(*) as count FROM agents').get() as { count: number }
