@@ -3,7 +3,7 @@
 - **Language:** TypeScript
 - **Framework:** Next.js (Ideal for combining a reliable TypeScript server-side architecture with a modern, fast React frontend for Steve's marketing needs)
 - **Database:** SQLite (Lightweight, reliable, and perfect for the initial phases and portable demos)
-- **Styling:** Modern responsive CSS approach
+- **Styling:** PicoCSS (Lightweight, classless CSS framework perfect for rapid responsive design and demo-friendly UIs)
 
 ## Testing
 
