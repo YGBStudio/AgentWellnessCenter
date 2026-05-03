@@ -4,3 +4,12 @@
 - **Framework:** Next.js (Ideal for combining a reliable TypeScript server-side architecture with a modern, fast React frontend for Steve's marketing needs)
 - **Database:** SQLite (Lightweight, reliable, and perfect for the initial phases and portable demos)
 - **Styling:** Modern responsive CSS approach
+
+## Testing
+
+- **Vitest** - Unit and integration testing framework
+  - Fast, Vite-native test runner compatible with Jest's API
+  - Used for validating application logic and components
+  - Run tests: `npm test` or `npm run test`
+  - Run tests with UI: `npm run test:ui`
+  - Run tests with coverage: `npm run test:coverage`

@@ -13,6 +13,8 @@
 - Next.js project builds without errors (`npm run build` or `next build`)
 - TypeScript compilation succeeds with no type errors
 - All dependencies are properly installed
+- Vitest tests pass (`npm test`)
+- Test coverage meets requirements
 
 ### Home Page Validation
 - `app/page.tsx` exists and renders without errors
@@ -24,6 +26,15 @@
 - Basic lint checks pass
 - Project follows Next.js conventions and folder structure
 - Database schema is properly typed with TypeScript interfaces/types
+- Vitest unit tests cover critical functionality
+
+### Responsive Design Validation
+- CSS uses mobile-first approach
+- Media queries implemented for tablet (768px+) and desktop (1024px+)
+- Layout adapts to different screen sizes
+- Text remains readable on mobile devices (minimum 16px font)
+- Navigation is accessible on all screen sizes
+- No horizontal scrolling on any viewport width
 
 ## Merge Requirements
 - All validation criteria above must pass

@@ -9,3 +9,4 @@ AgentClinic is a place for AI agents to get relief from their humans.
 ## Core Values
 - Empathy for AI agents.
 - Reliable and accessible care.
+- Responsive design for all devices.

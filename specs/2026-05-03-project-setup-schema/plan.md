@@ -26,10 +26,14 @@
     - Page should render successfully at root URL (`/`)
 
 4. **Create main layout component with header/main/footer subcomponents**
-    - Create a `components/Layout.tsx` main layout component
-    - Create `components/Header.tsx` subcomponent with site title and navigation
-    - Create `components/Main.tsx` subcomponent with main content area
-    - Create `components/Footer.tsx` subcomponent with copyright info
-    - Create `styles/layout.css` CSS file for layout styling
-    - Import and link the CSS file in the layout component
-    - Use the Layout component in `app/layout.tsx` to wrap all pages
+     - Create a `components/Layout.tsx` main layout component with responsive design
+     - Create `components/Header.tsx` subcomponent with site title and navigation (mobile-friendly)
+     - Create `components/Main.tsx` subcomponent with main content area (responsive padding)
+     - Create `components/Footer.tsx` subcomponent with copyright info
+     - Create `styles/layout.css` CSS file with:
+       - Mobile-first responsive design
+       - Media queries for tablet (768px+) and desktop (1024px+)
+       - Flexible layouts using flexbox/grid
+       - Responsive typography and spacing
+     - Import and link the CSS file in the layout component
+     - Use the Layout component in `app/layout.tsx` to wrap all pages

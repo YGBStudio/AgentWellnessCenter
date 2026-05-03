@@ -11,8 +11,9 @@ High-level implementation order in small phases:
    - Set up APIs for core entities.
 
 3. **Phase 3: Dashboard Skeleton**
-   - Create minimal responsive layout.
-   - Build a dashboard for agents and staff.
+    - Create responsive layout with mobile-first approach.
+    - Build a dashboard for agents and staff.
+    - Ensure UI adapts to all screen sizes (mobile, tablet, desktop).
 
 4. **Phase 4: Appointment Booking**
    - Develop scheduling UI and hook it up to backend.

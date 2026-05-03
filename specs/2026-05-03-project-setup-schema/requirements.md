@@ -14,7 +14,8 @@ This phase establishes the foundational project structure and database schema fo
 - **Language:** TypeScript
 - **Framework:** Next.js
 - **Database:** SQLite
-- **Styling:** Modern responsive CSS approach (to be implemented in later phases)
+- **Testing:** Vitest (unit and integration testing)
+- **Styling:** Modern responsive CSS approach (mobile-first, media queries, flexible layouts)
 
 ### Schema Design Context
 Based on the mission to serve AI agents seeking relief, the schema supports:
