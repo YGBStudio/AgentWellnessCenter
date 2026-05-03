@@ -19,8 +19,17 @@
    - Run initial migration to create all tables
 
 3. **Create minimal AgentClinic home page**
-   - Create `app/page.tsx` with a simple welcome page
-   - Display "AgentClinic" title and mission tagline
-   - Add basic page structure with semantic HTML
-   - Use minimal inline styles or CSS module for basic layout
-   - Page should render successfully at root URL (`/`)
+    - Create `app/page.tsx` with a simple welcome page
+    - Display "AgentClinic" title and mission tagline
+    - Add basic page structure with semantic HTML
+    - Use minimal inline styles or CSS module for basic layout
+    - Page should render successfully at root URL (`/`)
+
+4. **Create main layout component with header/main/footer subcomponents**
+    - Create a `components/Layout.tsx` main layout component
+    - Create `components/Header.tsx` subcomponent with site title and navigation
+    - Create `components/Main.tsx` subcomponent with main content area
+    - Create `components/Footer.tsx` subcomponent with copyright info
+    - Create `styles/layout.css` CSS file for layout styling
+    - Import and link the CSS file in the layout component
+    - Use the Layout component in `app/layout.tsx` to wrap all pages
