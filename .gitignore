@@ -43,3 +43,6 @@ next-env.d.ts
 *.db-journal
 *.db-wal
 *.db-shm
+# Documentation files not tracked
+README.md
+prompts.md
