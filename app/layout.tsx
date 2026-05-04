@@ -1,5 +1,6 @@
 import React from 'react'
 import Layout from '@/components/Layout'
+import '@picocss/pico'
 import '@/styles/layout.css'
 
 export const metadata = {

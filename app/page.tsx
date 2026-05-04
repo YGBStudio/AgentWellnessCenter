@@ -1,16 +1,22 @@
 import React from 'react'
-import { getAgentCount } from '@/lib/db/queries'
+import { getAgentCount, getAppointmentCount, getAilmentCount, getTherapyCount } from '@/lib/db/queries'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  let agentCount: number | null = null
+  let agentCount = 0
+  let appointmentCount = 0
+  let ailmentCount = 0
+  let therapyCount = 0
 
   try {
     agentCount = getAgentCount()
+    appointmentCount = getAppointmentCount()
+    ailmentCount = getAilmentCount()
+    therapyCount = getTherapyCount()
   } catch (error) {
-    console.error('Unable to load agent count', error)
+    console.error('Unable to load dashboard data', error)
   }
 
   return (
@@ -24,20 +30,27 @@ export default async function Home() {
         <div className="dashboard-grid" aria-label="Clinic overview">
           <article className="dashboard-card">
             <h3>Registered Agents</h3>
-            <p className="dashboard-metric">{agentCount ?? 'Unavailable'}</p>
+            <p className="dashboard-metric">{agentCount}</p>
+            <a href="/agents" role="button" className="outline contrast">View All</a>
           </article>
           <article className="dashboard-card">
             <h3>Appointments</h3>
-            <p className="dashboard-metric">Soon</p>
+            <p className="dashboard-metric">{appointmentCount}</p>
+            <a href="/appointments" role="button" className="outline contrast">View All</a>
           </article>
           <article className="dashboard-card">
             <h3>Care Pathways</h3>
-            <p className="dashboard-metric">Soon</p>
+            <p className="dashboard-metric">{ailmentCount}</p>
+            <a href="/ailments" role="button" className="outline contrast">View Ailments</a>
+          </article>
+          <article className="dashboard-card">
+            <h3>Therapies</h3>
+            <p className="dashboard-metric">{therapyCount}</p>
+            <a href="/therapies" role="button" className="outline contrast">View All</a>
           </article>
         </div>
         <p>
-          Track patient agents, match ailments to therapies, and coordinate appointments as
-          the clinic comes online.
+          Track patient agents, match ailments to therapies, and coordinate appointments.
         </p>
       </section>
     </>
