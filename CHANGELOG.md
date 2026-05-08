@@ -38,3 +38,8 @@
 - test(db): add full CRUD array tests and FK constraint coverage
 - docs(specs): align validation specs with actual test coverage
 - fix: resolve ZodError generic type and property access
+- docs: update changelog with recent commits
+- docs: update specs and skills for Agent Wellness Center rename
+- chore(config): update package name to agentwellnesscenter
+- feat(ui): apply Agent Wellness Center brand to views and layout
+- test: update heading assertions for Agent Wellness Center name
