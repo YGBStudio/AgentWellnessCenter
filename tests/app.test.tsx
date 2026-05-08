@@ -25,7 +25,7 @@ async function renderAsyncComponent(Component: typeof HomePage) {
 describe('App Page Tests', () => {
   it('renders home page with correct heading', async () => {
     await renderAsyncComponent(HomePage)
-    expect(screen.getByRole('heading', { level: 1, name: 'AgentClinic' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Agent Wellness Center' })).toBeInTheDocument()
   })
 
   it('displays clinic description', async () => {
