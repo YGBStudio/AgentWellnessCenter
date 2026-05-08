@@ -4,14 +4,14 @@ export function initializeDatabase(db: Database) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS agents (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
+      name TEXT NOT NULL UNIQUE,
       type TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
     CREATE TABLE IF NOT EXISTS ailments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
+      name TEXT NOT NULL UNIQUE,
       description TEXT NOT NULL,
       severity TEXT NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -19,7 +19,7 @@ export function initializeDatabase(db: Database) {
 
     CREATE TABLE IF NOT EXISTS therapies (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
+      name TEXT NOT NULL UNIQUE,
       description TEXT NOT NULL,
       duration INTEGER NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP

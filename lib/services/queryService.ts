@@ -1,12 +1,12 @@
-import { db as defaultDb } from '../db/client'
+import { getDb } from '../db/client'
 import Database from 'better-sqlite3'
-import type { Agent, Ailment, Therapy, Appointment } from '../db/types'
+import type { Agent, Ailment, Therapy, Appointment, AgentInsert, AilmentInsert, TherapyInsert, AppointmentInsert } from '../db/types'
 
 export class QueryService {
   private db: Database.Database
 
   constructor(db?: Database.Database) {
-    this.db = db || defaultDb
+    this.db = db || getDb()
   }
 
   getDb(): Database.Database {
@@ -22,12 +22,12 @@ export class QueryService {
     return this.getDb().prepare('SELECT * FROM agents WHERE id = ?').get(id) as Agent | undefined
   }
 
-  createAgent(agent: Omit<Agent, 'id' | 'created_at'>): number {
+  createAgent(agent: AgentInsert): number {
     const result = this.getDb().prepare('INSERT INTO agents (name, type) VALUES (?, ?)').run(agent.name, agent.type)
     return result.lastInsertRowid as number
   }
 
-  updateAgent(id: number, agent: Partial<Omit<Agent, 'id' | 'created_at'>>): boolean {
+  updateAgent(id: number, agent: Partial<AgentInsert>): boolean {
     const fields = []
     const values = []
     if (agent.name !== undefined) { fields.push('name = ?'); values.push(agent.name) }
@@ -48,6 +48,11 @@ export class QueryService {
     return row.count
   }
 
+  hasAgentAppointments(agentId: number): boolean {
+    const row = this.getDb().prepare('SELECT COUNT(*) as count FROM appointments WHERE agent_id = ?').get(agentId) as { count: number }
+    return row.count > 0
+  }
+
   // Ailment CRUD operations
   getAilments(): Ailment[] {
     return this.getDb().prepare('SELECT * FROM ailments ORDER BY created_at DESC').all() as Ailment[]
@@ -57,7 +62,7 @@ export class QueryService {
     return this.getDb().prepare('SELECT * FROM ailments WHERE id = ?').get(id) as Ailment | undefined
   }
 
-  createAilment(ailment: Omit<Ailment, 'id' | 'created_at'>): number {
+  createAilment(ailment: AilmentInsert): number {
     const result = this.getDb().prepare('INSERT INTO ailments (name, description, severity) VALUES (?, ?, ?)').run(
       ailment.name,
       ailment.description,
@@ -66,7 +71,7 @@ export class QueryService {
     return result.lastInsertRowid as number
   }
 
-  updateAilment(id: number, ailment: Partial<Omit<Ailment, 'id' | 'created_at'>>): boolean {
+  updateAilment(id: number, ailment: Partial<AilmentInsert>): boolean {
     const fields = []
     const values = []
     if (ailment.name !== undefined) { fields.push('name = ?'); values.push(ailment.name) }
@@ -83,6 +88,11 @@ export class QueryService {
     return result.changes > 0
   }
 
+  hasAilmentAppointments(ailmentId: number): boolean {
+    const row = this.getDb().prepare('SELECT COUNT(*) as count FROM appointments WHERE ailment_id = ?').get(ailmentId) as { count: number }
+    return row.count > 0
+  }
+
   // Therapy CRUD operations
   getTherapies(): Therapy[] {
     return this.getDb().prepare('SELECT * FROM therapies ORDER BY created_at DESC').all() as Therapy[]
@@ -92,7 +102,7 @@ export class QueryService {
     return this.getDb().prepare('SELECT * FROM therapies WHERE id = ?').get(id) as Therapy | undefined
   }
 
-  createTherapy(therapy: Omit<Therapy, 'id' | 'created_at'>): number {
+  createTherapy(therapy: TherapyInsert): number {
     const result = this.getDb().prepare('INSERT INTO therapies (name, description, duration) VALUES (?, ?, ?)').run(
       therapy.name,
       therapy.description,
@@ -101,7 +111,7 @@ export class QueryService {
     return result.lastInsertRowid as number
   }
 
-  updateTherapy(id: number, therapy: Partial<Omit<Therapy, 'id' | 'created_at'>>): boolean {
+  updateTherapy(id: number, therapy: Partial<TherapyInsert>): boolean {
     const fields = []
     const values = []
     if (therapy.name !== undefined) { fields.push('name = ?'); values.push(therapy.name) }
@@ -118,6 +128,11 @@ export class QueryService {
     return result.changes > 0
   }
 
+  hasTherapyAppointments(therapyId: number): boolean {
+    const row = this.getDb().prepare('SELECT COUNT(*) as count FROM appointments WHERE therapy_id = ?').get(therapyId) as { count: number }
+    return row.count > 0
+  }
+
   // Appointment CRUD operations
   getAppointments(): Appointment[] {
     return this.getDb().prepare('SELECT * FROM appointments ORDER BY date DESC').all() as Appointment[]
@@ -131,7 +146,7 @@ export class QueryService {
     return this.getDb().prepare('SELECT * FROM appointments WHERE agent_id = ? ORDER BY date DESC').all(agentId) as Appointment[]
   }
 
-  createAppointment(appointment: Omit<Appointment, 'id' | 'created_at'>): number {
+  createAppointment(appointment: AppointmentInsert): number {
     const result = this.getDb().prepare(
       'INSERT INTO appointments (agent_id, ailment_id, therapy_id, date, status) VALUES (?, ?, ?, ?, ?)'
     ).run(
@@ -144,7 +159,7 @@ export class QueryService {
     return result.lastInsertRowid as number
   }
 
-  updateAppointment(id: number, appointment: Partial<Omit<Appointment, 'id' | 'created_at'>>): boolean {
+  updateAppointment(id: number, appointment: Partial<AppointmentInsert>): boolean {
     const fields = []
     const values = []
     if (appointment.agent_id !== undefined) { fields.push('agent_id = ?'); values.push(appointment.agent_id) }

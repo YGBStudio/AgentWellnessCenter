@@ -4,17 +4,21 @@ import fs from 'fs'
 import { initializeDatabase } from './schema'
 
 const dbPath = path.join(process.cwd(), 'data', 'agentclinic.db')
-const dbDir = path.dirname(dbPath)
 
-// Ensure data directory exists
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true })
+let _db: Database.Database | null = null
+
+export function getDb(): Database.Database {
+  if (!_db) {
+    const dbDir = path.dirname(dbPath)
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true })
+    }
+    _db = new Database(dbPath)
+    _db.pragma('foreign_keys = ON')
+    initializeDatabase(_db)
+  }
+  return _db
 }
 
-export const db = new Database(dbPath)
-
-// Enable foreign keys
-db.pragma('foreign_keys = ON')
-
-// Initialize schema
-initializeDatabase(db)
+// Keep backward-compatible named export for existing code
+export const db = getDb()
