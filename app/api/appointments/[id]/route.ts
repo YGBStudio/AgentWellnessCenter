@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
+import { updateAppointmentSchema, parseId, formatZodError } from '@/lib/validation'
+
 const queryService = new QueryService()
-import type { Appointment } from '@/lib/db/types'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const appointmentId = parseInt(id)
+    const appointmentId = parseId(id)
+
+    if (appointmentId === null) {
+      return NextResponse.json({ error: 'Invalid appointment ID' }, { status: 400 })
+    }
+
     const appointment = queryService.getAppointmentById(appointmentId)
 
     if (!appointment) {
@@ -22,18 +28,20 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const appointmentId = parseInt(id)
+    const appointmentId = parseId(id)
+
+    if (appointmentId === null) {
+      return NextResponse.json({ error: 'Invalid appointment ID' }, { status: 400 })
+    }
+
     const body = await request.json()
-    const { agent_id, ailment_id, therapy_id, date, status } = body
+    const result = updateAppointmentSchema.safeParse(body)
 
-    const updates: Partial<Omit<Appointment, 'id' | 'created_at'>> = {}
-    if (agent_id !== undefined) updates.agent_id = Number(agent_id)
-    if (ailment_id !== undefined) updates.ailment_id = Number(ailment_id)
-    if (therapy_id !== undefined) updates.therapy_id = Number(therapy_id)
-    if (date !== undefined) updates.date = date
-    if (status !== undefined) updates.status = status
+    if (!result.success) {
+      return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
+    }
 
-    const success = queryService.updateAppointment(appointmentId, updates)
+    const success = queryService.updateAppointment(appointmentId, result.data)
 
     if (!success) {
       return NextResponse.json({ error: 'Appointment not found or no changes' }, { status: 404 })
@@ -49,7 +57,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const appointmentId = parseInt(id)
+    const appointmentId = parseId(id)
+
+    if (appointmentId === null) {
+      return NextResponse.json({ error: 'Invalid appointment ID' }, { status: 400 })
+    }
+
     const success = queryService.deleteAppointment(appointmentId)
 
     if (!success) {

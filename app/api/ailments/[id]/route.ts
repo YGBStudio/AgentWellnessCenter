@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
-import type { Ailment } from '@/lib/db/types'
+import { updateAilmentSchema, parseId, formatZodError } from '@/lib/validation'
 
 const queryService = new QueryService()
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const ailmentId = parseInt(id)
+    const ailmentId = parseId(id)
+
+    if (ailmentId === null) {
+      return NextResponse.json({ error: 'Invalid ailment ID' }, { status: 400 })
+    }
+
     const ailment = queryService.getAilmentById(ailmentId)
 
     if (!ailment) {
@@ -23,16 +28,20 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const ailmentId = parseInt(id)
+    const ailmentId = parseId(id)
+
+    if (ailmentId === null) {
+      return NextResponse.json({ error: 'Invalid ailment ID' }, { status: 400 })
+    }
+
     const body = await request.json()
-    const { name, description, severity } = body
+    const result = updateAilmentSchema.safeParse(body)
 
-    const updates: Partial<Omit<Ailment, 'id' | 'created_at'>> = {}
-    if (name !== undefined) updates.name = name
-    if (description !== undefined) updates.description = description
-    if (severity !== undefined) updates.severity = severity
+    if (!result.success) {
+      return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
+    }
 
-    const success = queryService.updateAilment(ailmentId, updates)
+    const success = queryService.updateAilment(ailmentId, result.data)
 
     if (!success) {
       return NextResponse.json({ error: 'Ailment not found or no changes' }, { status: 404 })
@@ -48,7 +57,16 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const ailmentId = parseInt(id)
+    const ailmentId = parseId(id)
+
+    if (ailmentId === null) {
+      return NextResponse.json({ error: 'Invalid ailment ID' }, { status: 400 })
+    }
+
+    if (queryService.hasAilmentAppointments(ailmentId)) {
+      return NextResponse.json({ error: 'Cannot delete ailment with existing appointments' }, { status: 409 })
+    }
+
     const success = queryService.deleteAilment(ailmentId)
 
     if (!success) {

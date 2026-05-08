@@ -1,15 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
+import { createAppointmentSchema, parseId, formatZodError } from '@/lib/validation'
+
 const queryService = new QueryService()
-import type { Appointment } from '@/lib/db/types'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const agentId = searchParams.get('agentId')
+    const agentIdParam = searchParams.get('agentId')
 
-    if (agentId) {
-      const appointments = queryService.getAppointmentsByAgentId(parseInt(agentId))
+    if (agentIdParam) {
+      const agentId = parseId(agentIdParam)
+      if (agentId === null) {
+        return NextResponse.json({ error: 'Invalid agent ID' }, { status: 400 })
+      }
+      const appointments = queryService.getAppointmentsByAgentId(agentId)
       return NextResponse.json(appointments)
     }
 
@@ -23,22 +28,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { agent_id, ailment_id, therapy_id, date, status } = body
+    const result = createAppointmentSchema.safeParse(body)
 
-    if (!agent_id || !ailment_id || !therapy_id || !date || !status) {
-      return NextResponse.json({ error: 'agent_id, ailment_id, therapy_id, date, and status are required' }, { status: 400 })
+    if (!result.success) {
+      return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const appointment: Omit<Appointment, 'id' | 'created_at'> = {
-      agent_id: Number(agent_id),
-      ailment_id: Number(ailment_id),
-      therapy_id: Number(therapy_id),
-      date,
-      status
-    }
-    const id = queryService.createAppointment(appointment)
-    const created = queryService.getAppointments().find(a => a.id === id)
-
+    const id = queryService.createAppointment(result.data)
+    const created = queryService.getAppointmentById(id)
     return NextResponse.json(created, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Failed to create appointment' }, { status: 500 })

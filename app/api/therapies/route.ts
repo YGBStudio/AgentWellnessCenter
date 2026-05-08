@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
-const queryService = new QueryService()
+import { createTherapySchema, formatZodError } from '@/lib/validation'
 
-import type { Therapy } from '@/lib/db/types'
+const queryService = new QueryService()
 
 export async function GET() {
   try {
@@ -13,19 +13,17 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, description, duration } = body
+    const result = createTherapySchema.safeParse(body)
 
-    if (!name || !description || duration === undefined) {
-      return NextResponse.json({ error: 'Name, description, and duration are required' }, { status: 400 })
+    if (!result.success) {
+      return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const therapy: Omit<Therapy, 'id' | 'created_at'> = { name, description, duration: Number(duration) }
-    const id = queryService.createTherapy(therapy)
-    const created = queryService.getTherapies().find(t => t.id === id)
-
+    const id = queryService.createTherapy(result.data)
+    const created = queryService.getTherapyById(id)
     return NextResponse.json(created, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Failed to create therapy' }, { status: 500 })

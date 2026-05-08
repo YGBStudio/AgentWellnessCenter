@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
-const queryService = new QueryService()
+import { createAgentSchema, formatZodError } from '@/lib/validation'
 
-import type { Agent } from '@/lib/db/types'
+const queryService = new QueryService()
 
 export async function GET() {
   try {
@@ -13,19 +13,17 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, type } = body
+    const result = createAgentSchema.safeParse(body)
 
-    if (!name || !type) {
-      return NextResponse.json({ error: 'Name and type are required' }, { status: 400 })
+    if (!result.success) {
+      return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const agent: Omit<Agent, 'id' | 'created_at'> = { name, type }
-    const id = queryService.createAgent(agent)
-    const created = queryService.getAgents().find(a => a.id === id)
-
+    const id = queryService.createAgent(result.data)
+    const created = queryService.getAgentById(id)
     return NextResponse.json(created, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Failed to create agent' }, { status: 500 })

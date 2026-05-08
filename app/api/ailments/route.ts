@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
-const queryService = new QueryService()
+import { createAilmentSchema, formatZodError } from '@/lib/validation'
 
-import type { Ailment } from '@/lib/db/types'
+const queryService = new QueryService()
 
 export async function GET() {
   try {
@@ -13,19 +13,17 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { name, description, severity } = body
+    const result = createAilmentSchema.safeParse(body)
 
-    if (!name || !description || !severity) {
-      return NextResponse.json({ error: 'Name, description, and severity are required' }, { status: 400 })
+    if (!result.success) {
+      return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const ailment: Omit<Ailment, 'id' | 'created_at'> = { name, description, severity }
-    const id = queryService.createAilment(ailment)
-    const created = queryService.getAilments().find(a => a.id === id)
-
+    const id = queryService.createAilment(result.data)
+    const created = queryService.getAilmentById(id)
     return NextResponse.json(created, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Failed to create ailment' }, { status: 500 })
