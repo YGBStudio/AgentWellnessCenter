@@ -3,7 +3,7 @@
 import React from 'react'
 
 export default function AilmentForm() {
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const name = formData.get('name') as string

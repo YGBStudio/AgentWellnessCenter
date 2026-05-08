@@ -1,5 +1,5 @@
 import React from 'react'
-import { getAppointments, getAgents, getAilments, getTherapies } from '@/lib/db/queries'
+import { QueryService } from '@/lib/services/queryService'
 import type { Agent, Ailment, Therapy } from '@/lib/db/types'
 import AppointmentForm from './AppointmentForm'
 
@@ -7,10 +7,11 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export default async function AppointmentsPage() {
-  const appointments = getAppointments()
-  const agents = getAgents() as Agent[]
-  const ailments = getAilments() as Ailment[]
-  const therapies = getTherapies() as Therapy[]
+  const queryService = new QueryService()
+  const appointments = queryService.getAppointments()
+  const agents = queryService.getAgents() as Agent[]
+  const ailments = queryService.getAilments() as Ailment[]
+  const therapies = queryService.getTherapies() as Therapy[]
 
   return (
     <>

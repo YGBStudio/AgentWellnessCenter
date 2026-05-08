@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAppointmentById, updateAppointment, deleteAppointment } from '@/lib/db/queries'
+import { QueryService } from '@/lib/services/queryService'
+const queryService = new QueryService()
 import type { Appointment } from '@/lib/db/types'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const appointmentId = parseInt(id)
-    const appointment = getAppointmentById(appointmentId)
+    const appointment = queryService.getAppointmentById(appointmentId)
 
     if (!appointment) {
       return NextResponse.json({ error: 'Appointment not found' }, { status: 404 })
@@ -32,13 +33,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (date !== undefined) updates.date = date
     if (status !== undefined) updates.status = status
 
-    const success = updateAppointment(appointmentId, updates)
+    const success = queryService.updateAppointment(appointmentId, updates)
 
     if (!success) {
       return NextResponse.json({ error: 'Appointment not found or no changes' }, { status: 404 })
     }
 
-    const updated = getAppointmentById(appointmentId)
+    const updated = queryService.getAppointmentById(appointmentId)
     return NextResponse.json(updated)
   } catch {
     return NextResponse.json({ error: 'Failed to update appointment' }, { status: 500 })
@@ -49,7 +50,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id } = await params
     const appointmentId = parseInt(id)
-    const success = deleteAppointment(appointmentId)
+    const success = queryService.deleteAppointment(appointmentId)
 
     if (!success) {
       return NextResponse.json({ error: 'Appointment not found' }, { status: 404 })

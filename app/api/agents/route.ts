@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAgents, createAgent } from '@/lib/db/queries'
+import { QueryService } from '@/lib/services/queryService'
+const queryService = new QueryService()
+
 import type { Agent } from '@/lib/db/types'
 
 export async function GET() {
   try {
-    const agents = getAgents()
+    const agents = queryService.getAgents()
     return NextResponse.json(agents)
   } catch {
     return NextResponse.json({ error: 'Failed to fetch agents' }, { status: 500 })
@@ -21,8 +23,8 @@ export async function POST(request: NextRequest) {
     }
 
     const agent: Omit<Agent, 'id' | 'created_at'> = { name, type }
-    const id = createAgent(agent)
-    const created = getAgents().find(a => a.id === id)
+    const id = queryService.createAgent(agent)
+    const created = queryService.getAgents().find(a => a.id === id)
 
     return NextResponse.json(created, { status: 201 })
   } catch {

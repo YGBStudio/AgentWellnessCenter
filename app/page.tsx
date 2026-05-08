@@ -1,5 +1,5 @@
 import React from 'react'
-import { getAgentCount, getAppointmentCount, getAilmentCount, getTherapyCount } from '@/lib/db/queries'
+import { QueryService } from '@/lib/services/queryService'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -11,10 +11,11 @@ export default async function Home() {
   let therapyCount = 0
 
   try {
-    agentCount = getAgentCount()
-    appointmentCount = getAppointmentCount()
-    ailmentCount = getAilmentCount()
-    therapyCount = getTherapyCount()
+    const queryService = new QueryService()
+    agentCount = queryService.getAgentCount()
+    appointmentCount = queryService.getAppointmentCount()
+    ailmentCount = queryService.getAilmentCount()
+    therapyCount = queryService.getTherapyCount()
   } catch (error) {
     console.error('Unable to load dashboard data', error)
   }

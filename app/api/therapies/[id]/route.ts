@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getTherapyById, updateTherapy, deleteTherapy } from '@/lib/db/queries'
+import { QueryService } from '@/lib/services/queryService'
+const queryService = new QueryService()
 import type { Therapy } from '@/lib/db/types'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const therapyId = parseInt(id)
-    const therapy = getTherapyById(therapyId)
+    const therapy = queryService.getTherapyById(therapyId)
 
     if (!therapy) {
       return NextResponse.json({ error: 'Therapy not found' }, { status: 404 })
@@ -30,13 +31,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (description !== undefined) updates.description = description
     if (duration !== undefined) updates.duration = Number(duration)
 
-    const success = updateTherapy(therapyId, updates)
+    const success = queryService.updateTherapy(therapyId, updates)
 
     if (!success) {
       return NextResponse.json({ error: 'Therapy not found or no changes' }, { status: 404 })
     }
 
-    const updated = getTherapyById(therapyId)
+    const updated = queryService.getTherapyById(therapyId)
     return NextResponse.json(updated)
   } catch {
     return NextResponse.json({ error: 'Failed to update therapy' }, { status: 500 })
@@ -47,7 +48,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
   try {
     const { id } = await params
     const therapyId = parseInt(id)
-    const success = deleteTherapy(therapyId)
+    const success = queryService.deleteTherapy(therapyId)
 
     if (!success) {
       return NextResponse.json({ error: 'Therapy not found' }, { status: 404 })

@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAilments, createAilment } from '@/lib/db/queries'
+import { QueryService } from '@/lib/services/queryService'
+const queryService = new QueryService()
+
 import type { Ailment } from '@/lib/db/types'
 
 export async function GET() {
   try {
-    const ailments = getAilments()
+    const ailments = queryService.getAilments()
     return NextResponse.json(ailments)
   } catch {
     return NextResponse.json({ error: 'Failed to fetch ailments' }, { status: 500 })
@@ -21,8 +23,8 @@ export async function POST(request: NextRequest) {
     }
 
     const ailment: Omit<Ailment, 'id' | 'created_at'> = { name, description, severity }
-    const id = createAilment(ailment)
-    const created = getAilments().find(a => a.id === id)
+    const id = queryService.createAilment(ailment)
+    const created = queryService.getAilments().find(a => a.id === id)
 
     return NextResponse.json(created, { status: 201 })
   } catch {

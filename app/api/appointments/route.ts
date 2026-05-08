@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getAppointments, getAppointmentsByAgentId, createAppointment } from '@/lib/db/queries'
+import { QueryService } from '@/lib/services/queryService'
+const queryService = new QueryService()
 import type { Appointment } from '@/lib/db/types'
 
 export async function GET(request: NextRequest) {
@@ -8,11 +9,11 @@ export async function GET(request: NextRequest) {
     const agentId = searchParams.get('agentId')
 
     if (agentId) {
-      const appointments = getAppointmentsByAgentId(parseInt(agentId))
+      const appointments = queryService.getAppointmentsByAgentId(parseInt(agentId))
       return NextResponse.json(appointments)
     }
 
-    const appointments = getAppointments()
+    const appointments = queryService.getAppointments()
     return NextResponse.json(appointments)
   } catch {
     return NextResponse.json({ error: 'Failed to fetch appointments' }, { status: 500 })
@@ -35,8 +36,8 @@ export async function POST(request: NextRequest) {
       date,
       status
     }
-    const id = createAppointment(appointment)
-    const created = getAppointments().find(a => a.id === id)
+    const id = queryService.createAppointment(appointment)
+    const created = queryService.getAppointments().find(a => a.id === id)
 
     return NextResponse.json(created, { status: 201 })
   } catch {
