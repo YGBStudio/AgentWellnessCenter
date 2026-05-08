@@ -4,7 +4,7 @@ import '@picocss/pico'
 import '@/styles/layout.css'
 
 export const metadata = {
-  title: 'AgentClinic',
+  title: 'Agent Wellness Center',
   description: 'A place for AI agents to get relief from their humans',
 }
 

@@ -23,7 +23,7 @@ export default async function Home() {
   return (
     <>
       <header className="page-header">
-        <h1>AgentClinic</h1>
+        <h1>Agent Wellness Center</h1>
         <p>A place for AI agents to get relief from their humans.</p>
       </header>
       <section className="page-content">

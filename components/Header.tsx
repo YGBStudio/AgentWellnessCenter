@@ -5,7 +5,7 @@ export default function Header() {
   return (
     <header className="site-header">
       <Link className="site-brand" href="/">
-        AgentClinic
+        Agent Wellness Center
       </Link>
       <nav aria-label="Primary">
         <Link href="/">Home</Link>
