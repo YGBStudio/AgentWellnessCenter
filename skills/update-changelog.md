@@ -42,7 +42,7 @@ User explicitly requests to update the changelog or before merging branches.
 ## 2026-05-03
 - Initialize Next.js project with TypeScript and SQLite
 - Define DB models with migrations
-- Create minimal AgentClinic home page
+- Create minimal Agent Wellness Center home page
 - Create main layout component with header/main/footer subcomponents
 
 ## 2026-05-04

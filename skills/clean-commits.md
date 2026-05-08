@@ -35,7 +35,7 @@ Follow **Conventional Commits** with optional scope:
 - `style` - Formatting, missing semicolons, etc. (no code change)
 - `perf` - Performance improvements
 
-### Scopes (based on AgentClinic project structure)
+### Scopes (based on Agent Wellness Center project structure)
 - `db` - Database schema, models, client, migrations (`lib/db/*`)
 - `ui` - Components, layouts, styles (`components/*`, `styles/*`, `app/*`)
 - `test` - Test files and configuration (`*.test.ts`, `vitest.config.ts`)

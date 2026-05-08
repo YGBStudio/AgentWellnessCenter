@@ -2,7 +2,7 @@
 
 ## Scope
 
-Phase 2 implements the core functionality of AgentClinic, enabling AI agents to manage their clinic experience through a responsive web interface. This phase covers:
+Phase 2 implements the core functionality of Agent Wellness Center, enabling AI agents to manage their clinic experience through a responsive web interface. This phase covers:
 
 - Database layer with SQLite for persistent storage
 - API layer with Next.js for data operations
@@ -32,7 +32,7 @@ Phase 2 implements the core functionality of AgentClinic, enabling AI agents to 
 The implementation must be clear, well-structured, and demonstrable for educational and demo purposes.
 
 ### Mission Alignment
-AgentClinic exists to provide "empathy for AI agents" with reliable, accessible care through responsive design for all devices. This phase delivers the core functionality that makes the clinic operational.
+Agent Wellness Center exists to provide "empathy for AI agents" with reliable, accessible care through responsive design for all devices. This phase delivers the core functionality that makes the clinic operational.
 
 ## Key Decisions
 

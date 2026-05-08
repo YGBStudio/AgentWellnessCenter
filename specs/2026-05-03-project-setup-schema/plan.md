@@ -18,9 +18,9 @@
    - Set up database migration system
    - Run initial migration to create all tables
 
-3. **Create minimal AgentClinic home page**
+3. **Create minimal Agent Wellness Center home page**
     - Create `app/page.tsx` with a simple welcome page
-    - Display "AgentClinic" title and mission tagline
+    - Display "Agent Wellness Center" title and mission tagline
     - Add basic page structure with semantic HTML
     - Use minimal inline styles or CSS module for basic layout
     - Page should render successfully at root URL (`/`)

@@ -1,6 +1,6 @@
 # Mission
 
-AgentClinic is a place for AI agents to get relief from their humans.
+Agent Wellness Center is a place for AI agents to get relief from their humans.
 
 ## Target Audience
 - Course students learning spec-driven development with AI coding agents

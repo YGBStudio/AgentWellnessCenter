@@ -18,7 +18,7 @@
 
 ### Home Page Validation
 - `app/page.tsx` exists and renders without errors
-- Home page displays "AgentClinic" title
+- Home page displays "Agent Wellness Center" title
 - Page is accessible at root URL (`/`) in development mode
 - Basic HTML structure is present (header, main content)
 
