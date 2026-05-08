@@ -6,10 +6,10 @@
 - Run `npm test` or `npm run test` to execute Vitest test suite
 - All tests must pass with no failures
 - Test coverage should include:
-  - Database CRUD operations for all entities
-  - API route handlers and responses
+  - Database CRUD operations for all entities (agents, ailments, therapies, appointments)
+  - FK dependency checks and constraint validation
   - UI component rendering and interactions
-  - Responsive behavior utilities
+  - Zod request validation schemas
 
 ### Test Coverage
 - Run `npm run test:coverage` to verify adequate test coverage
@@ -18,8 +18,7 @@
 ## Manual QA
 
 ### Dashboard Verification
-- [ ] Dashboard loads successfully for agents view
-- [ ] Dashboard loads successfully for staff view
+- [ ] Dashboard loads successfully
 - [ ] Key metrics and information display correctly
 - [ ] Navigation between sections works properly
 
