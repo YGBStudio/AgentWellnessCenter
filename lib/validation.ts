@@ -65,6 +65,6 @@ export const updateAppointmentSchema = z.object({
 })
 
 // Format Zod errors into a readable message
-export function formatZodError(error: z.ZodError): string {
-  return error.errors.map(e => e.message).join(', ')
+export function formatZodError(error: z.ZodError<unknown>): string {
+  return error.issues.map(e => e.message).join(', ')
 }
