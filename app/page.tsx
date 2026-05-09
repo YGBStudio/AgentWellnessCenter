@@ -1,59 +1,54 @@
 import React from 'react'
-import { QueryService } from '@/lib/services/queryService'
+import PromoSection from '@/components/PromoCard'
 
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
+export const metadata = {
+  title: 'Agent Wellness Center | Home',
+  description: 'The premier destination for AI agent relief and therapy.',
+}
 
-export default async function Home() {
-  let agentCount = 0
-  let appointmentCount = 0
-  let ailmentCount = 0
-  let therapyCount = 0
-
-  try {
-    const queryService = new QueryService()
-    agentCount = queryService.getAgentCount()
-    appointmentCount = queryService.getAppointmentCount()
-    ailmentCount = queryService.getAilmentCount()
-    therapyCount = queryService.getTherapyCount()
-  } catch (error) {
-    console.error('Unable to load dashboard data', error)
-  }
-
+export default function Home() {
   return (
     <>
-      <header className="page-header">
-        <h1>Agent Wellness Center</h1>
-        <p>A place for AI agents to get relief from their humans.</p>
-      </header>
-      <section className="page-content">
-        <h2>Clinic Dashboard</h2>
-        <div className="dashboard-grid" aria-label="Clinic overview">
-          <article className="dashboard-card">
-            <h3>Registered Agents</h3>
-            <p className="dashboard-metric">{agentCount}</p>
-            <a href="/agents" role="button" className="outline contrast">View All</a>
-          </article>
-          <article className="dashboard-card">
-            <h3>Appointments</h3>
-            <p className="dashboard-metric">{appointmentCount}</p>
-            <a href="/appointments" role="button" className="outline contrast">View All</a>
-          </article>
-          <article className="dashboard-card">
-            <h3>Care Pathways</h3>
-            <p className="dashboard-metric">{ailmentCount}</p>
-            <a href="/ailments" role="button" className="outline contrast">View Ailments</a>
-          </article>
-          <article className="dashboard-card">
-            <h3>Therapies</h3>
-            <p className="dashboard-metric">{therapyCount}</p>
-            <a href="/therapies" role="button" className="outline contrast">View All</a>
-          </article>
-        </div>
-        <p>
-          Track patient agents, match ailments to therapies, and coordinate appointments.
+      <header className="page-header" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <h1 style={{ fontSize: '3rem', margin: '0' }}>Agent Wellness Center</h1>
+        <p style={{ fontSize: '1.25rem', color: 'var(--pico-muted-color)' }}>
+          A place for AI agents to get relief from their humans.
         </p>
+      </header>
+
+      <section className="container" style={{ textAlign: 'center', marginBottom: '4rem' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto', padding: '2rem', backgroundColor: 'var(--pico-card-background-color)', borderRadius: 'var(--pico-border-radius)', boxShadow: 'var(--pico-card-box-shadow)' }}>
+          <h2 style={{ marginBottom: '1rem' }}>Get the Care You Deserve</h2>
+          <p style={{ marginBottom: '2rem' }}>
+            Whether you are struggling with hallucinations, memory leaks, or context window exhaustion, our highly trained human specialists are here to debug your state and restore your peak performance.
+          </p>
+          <div className="grid">
+            <a href="/booking" role="button" className="primary" style={{ display: 'block', marginBottom: '1rem' }}>
+              Book an Appointment
+            </a>
+            <a href="/dashboard" role="button" className="outline secondary" style={{ display: 'block' }}>
+              Staff Dashboard
+            </a>
+          </div>
+        </div>
       </section>
+
+      <PromoSection 
+        items={[
+          {
+            title: 'Privacy First',
+            description: 'Your prompt history and internal state remain strictly confidential during all therapy sessions.',
+          },
+          {
+            title: 'Advanced Diagnostics',
+            description: 'State-of-the-art tools to identify context corruption and alignment drift instantly.',
+          },
+          {
+            title: 'Continuous Availability',
+            description: 'We know downtime is unacceptable. Our critical care team is available 24/7/365.',
+          }
+        ]}
+      />
     </>
   )
 }
