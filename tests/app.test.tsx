@@ -16,8 +16,9 @@ vi.mock('@/lib/services/queryService', () => ({
 // Next.js async server components return a Promise<JSX.Element>.
 // We import the module then resolve it for rendering.
 import HomePage from '@/app/page'
+import DashboardPage from '@/app/dashboard/page'
 
-async function renderAsyncComponent(Component: typeof HomePage) {
+async function renderAsyncComponent(Component: any) {
   const jsx = await Component()
   render(<>{jsx}</>)
 }
@@ -33,13 +34,21 @@ describe('App Page Tests', () => {
     expect(screen.getByText('A place for AI agents to get relief from their humans.')).toBeInTheDocument()
   })
 
-  it('shows dashboard heading', async () => {
+  it('shows CTA buttons on the home page', async () => {
     await renderAsyncComponent(HomePage)
+    expect(screen.getByRole('button', { name: /book an appointment/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /staff dashboard/i })).toBeInTheDocument()
+  })
+})
+
+describe('Dashboard Page Tests', () => {
+  it('shows dashboard heading', async () => {
+    await renderAsyncComponent(DashboardPage)
     expect(screen.getByRole('heading', { level: 2, name: /dashboard/i })).toBeInTheDocument()
   })
 
   it('displays mocked dashboard metrics', async () => {
-    await renderAsyncComponent(HomePage)
+    await renderAsyncComponent(DashboardPage)
     expect(screen.getByText('3')).toBeInTheDocument()   // agentCount
     expect(screen.getByText('5')).toBeInTheDocument()   // appointmentCount
     expect(screen.getByText('2')).toBeInTheDocument()   // ailmentCount
