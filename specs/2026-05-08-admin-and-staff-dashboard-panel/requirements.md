@@ -7,13 +7,14 @@ This feature focuses on creating a secure role-based access system for the Agent
 3. Public-facing appointment booking interface for agents/patients
 
 ### In Scope
+- Core Project Structure Definition:
+  - **Public Home Page** (`/`): Landing page for the Wellness Center.
+  - **Admin Dashboard** (`/dashboard`): Protected overview page with key metrics.
+  - **Public Booking** (`/booking`): Streamlined appointment form.
 - Authentication system (login/logout) for admin/staff users
 - Role-based access control (admin/staff vs public vs anonymous)
-- Protected therapy management interface (reuse existing CRUD with access controls)
-- Protected ailment management interface (reuse existing CRUD with access controls)
-- Protected agents management interface (reuse existing CRUD with access controls)
-- Protected appointments management interface (reuse existing CRUD with access controls)
-- Public appointment booking interface (new, streamlined form)
+- Protected management interfaces (reuse existing CRUD under `/dashboard/*` or similar access controls)
+- Public appointment booking interface (new, streamlined form at `/booking`)
 - API endpoint security enhancements
 - Responsive design for all device types
 

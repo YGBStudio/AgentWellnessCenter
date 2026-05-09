@@ -9,8 +9,9 @@
 - Add role-based access control to existing API routes
 
 ## 2. Admin Dashboard Interface (Leveraging Existing Components)
+- Define `app/dashboard/page.tsx` as the main admin dashboard view.
 - Create admin layout with sidebar navigation
-- Build admin dashboard overview showing key metrics (similar to existing home page but protected)
+- Build admin dashboard overview showing key metrics (move existing `/` metrics to `/dashboard`)
 - Create protected wrapper components for existing management interfaces:
   - Admin Agents Page (reuse existing agents CRUD with admin-only access)
   - Admin Ailments Page (reuse existing ailments CRUD with admin-only access)
@@ -18,13 +19,13 @@
   - Admin Appointments Page (reuse existing appointments CRUD with admin-only access)
 - Ensure all admin interfaces require authentication and appropriate roles
 
-## 3. Public Appointment Booking Interface (New)
-- Create separate public booking page (no authentication required)
-- Design streamlined booking form focused on patient/agent needs
-- Implement agent availability checking
-- Add validation for booking conflicts
-- Create booking confirmation screen
-- Ensure mobile-responsive design
+## 3. Public Pages (New and Migrated)
+- [x] Create separate public booking page (no authentication required) at `/booking`
+- [x] Design streamlined booking form focused on patient/agent needs
+- [x] Implement agent availability checking and conflict validation
+- [x] Create booking confirmation screen at `/booking/confirmation`
+- [ ] Define and implement the Public Home Page at `/` (landing page, linking to booking).
+- [x] Ensure mobile-responsive design
 
 ## 4. API Security Enhancements
 - Add authentication middleware to protect therapy/ailment/appointment/agent creation/update/delete endpoints

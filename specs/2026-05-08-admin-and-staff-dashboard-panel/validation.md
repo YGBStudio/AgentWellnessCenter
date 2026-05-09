@@ -13,21 +13,22 @@ The implementation will be considered successful when all of the following crite
 - [ ] Authenticated users with insufficient roles see appropriate access denied messages
 
 ### Admin Dashboard Interface (Protected)
-- [ ] Authenticated admin/staff users can access the admin dashboard
-- [ ] Admin dashboard displays key metrics similar to existing home page but protected
+- [ ] Authenticated admin/staff users can access the admin dashboard (`/dashboard`)
+- [ ] Admin dashboard displays key metrics (migrated from the old root page)
 - [ ] Admin sidebar navigation provides access to all managed entities
 - [ ] Existing CRUD interfaces for agents, ailments, therapies, appointments are accessible only to authorized users
 - [ ] Unauthenticated users attempting to access admin interfaces are redirected to login
 - [ ] Users with insufficient roles (e.g., public role) see access denied when trying to access admin functions
 
 ### Public Appointment Booking Interface
-- [ ] Unauthenticated users can access the public booking page
-- [ ] Booking form collects essential information for appointment scheduling
-- [ ] Form validates required fields and provides clear error messages
-- [ ] System prevents double-booking by checking agent/therapy availability
-- [ ] Successful booking shows confirmation screen with appointment details
-- [ ] Booking data is correctly stored with proper relationships to agents, therapies, ailments
-- [ ] Interface is fully functional without requiring authentication
+- [x] Unauthenticated users can access the public booking page (`/booking`)
+- [x] Booking form collects essential information for appointment scheduling
+- [x] Form validates required fields and provides clear error messages
+- [x] System prevents double-booking by checking agent/therapy availability
+- [x] Successful booking shows confirmation screen with appointment details (`/booking/confirmation`)
+- [x] Booking data is correctly stored with proper relationships to agents, therapies, ailments
+- [x] Interface is fully functional without requiring authentication
+- [ ] Public Home Page (`/`) correctly acts as a landing page linking to the booking interface or dashboard.
 
 ### API Security Enhancements
 - [ ] Protected API endpoints (create/update/delete) return 401 for unauthenticated requests
