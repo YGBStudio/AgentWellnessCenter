@@ -2,6 +2,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import React from 'react'
 import { render, screen } from '@testing-library/react'
+import type { JSX } from 'react'
 
 // Mock the QueryService to avoid real DB access during tests
 vi.mock('@/lib/services/queryService', () => ({
@@ -18,7 +19,7 @@ vi.mock('@/lib/services/queryService', () => ({
 import HomePage from '@/app/page'
 import DashboardPage from '@/app/dashboard/page'
 
-async function renderAsyncComponent(Component: any) {
+async function renderAsyncComponent(Component: () => Promise<JSX.Element>) {
   const jsx = await Component()
   render(<>{jsx}</>)
 }
