@@ -43,3 +43,14 @@
 - chore(config): update package name to agentwellnesscenter
 - feat(ui): apply Agent Wellness Center brand to views and layout
 - test: update heading assertions for Agent Wellness Center name
+
+## 2026-05-08
+- feat: create Phase 3 specifications for Admin and Staff Dashboard Panel feature
+- docs(specs): update admin and staff dashboard panel specifications
+- feat(ui): implement home page redesign with promo cards and new booking/dashboard routes
+- feat(services): add appointment conflict checking to query service
+- test(app): fix dashboard tests to match updated home page and add dashboard page tests
+- test(app): fix type annotation in test helper function and config(ts): add baseUrl to tsconfig for path aliases
+- test(app): improve type safety in test helper function
+
+
