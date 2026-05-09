@@ -193,4 +193,12 @@ export class QueryService {
     const row = this.getDb().prepare('SELECT COUNT(*) as count FROM therapies').get() as { count: number }
     return row.count
   }
+
+  // Availability checking
+  checkAppointmentConflict(agentId: number, date: string): boolean {
+    const row = this.getDb().prepare(
+      'SELECT COUNT(*) as count FROM appointments WHERE agent_id = ? AND date = ? AND status != ?'
+    ).get(agentId, date, 'cancelled') as { count: number }
+    return row.count > 0
+  }
 }
