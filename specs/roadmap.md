@@ -14,7 +14,7 @@ High-level implementation order in small phases:
     - Ensure UI adapts to all screen sizes (mobile, tablet, desktop).
     - Develop scheduling UI and hook it up to backend.
 
-3. **Phase 3: Admin and Staff Dashboard Panel**
+3. **Phase 3: Admin and Staff Dashboard Panel (Partial)**
     - Implement authentication and authorization for admin/staff users
     - Build therapy management system (CRUD operations for staff only)
     - Build ailment management system (CRUD operations for staff only)
@@ -22,3 +22,24 @@ High-level implementation order in small phases:
     - Develop API endpoints for all management functions
     - Ensure responsive design for all device types
     - Write comprehensive tests and validate implementation
+    - **Status:** Public booking + CRUD infrastructure + dashboard metrics complete. Auth, protected routes, API security, and testing deferred to Phase 4.
+
+4. **Phase 4: Authentication, Authorization & Full Admin Dashboard** (NEW)
+     - Add user model and database schema (users table with roles)
+     - Implement JWT/session-based auth with login/logout endpoints
+     - Create login page with form validation
+     - Seed default admin user
+     - Build auth context/provider for frontend state management
+     - Implement route protection middleware and protected admin layout with sidebar
+     - Secure all write API endpoints (401 for unauthenticated, 403 for unauthorized)
+     - Wire up edit/delete actions in CRUD list components
+     - Build access-denied page
+     - Write auth integration and E2E tests
+     - Validate responsive design across all device types
+
+  5. **Phase 5: Visual Revamp & Responsive NavBar** (NEW — specs pending)
+     - Revamp CSS styles across all PicoCSS-based components for a polished, modern look
+     - Improve content organization and visual hierarchy on all pages
+     - Build a new responsive NavBar component that adapts across mobile/tablet/desktop
+     - Refine typography, spacing, color palette, and iconography
+     - Review and improve accessibility (contrast, focus states, ARIA labels)

@@ -6,19 +6,35 @@ This feature focuses on creating a secure role-based access system for the Agent
 2. Protected management interfaces leveraging existing CRUD components
 3. Public-facing appointment booking interface for agents/patients
 
-### In Scope
-- Core Project Structure Definition:
-  - **Public Home Page** (`/`): Landing page for the Wellness Center.
-  - **Admin Dashboard** (`/dashboard`): Protected overview page with key metrics.
-  - **Public Booking** (`/booking`): Streamlined appointment form.
+### Phase 3 — Completed in Scope ✅
+- Core Project Structure: Public Home Page (`/`), Admin Dashboard (`/dashboard`), Public Booking (`/booking`)
+- Full REST API CRUD for agents, ailments, therapies, appointments
+- Zod validation on all API write operations
+- FK constraint protection (prevents deleting entities with appointments)
+- Booking conflict detection
+- Booking confirmation page (`/booking/confirmation`)
+- Responsive layout with PicoCSS (Header, Main, Footer, Layout)
+- List components: AgentList, AilmentList, TherapyList, AppointmentList
+- Form components: AgentForm, AilmentForm, TherapyForm, AppointmentForm
+- QueryService with all CRUD operations and dashboard statistics
+
+### Phase 3 — NOT Completed (Deferred to Phase 4) ❌
 - Authentication system (login/logout) for admin/staff users
+- User database model (users table)
+- JWT/session management
 - Role-based access control (admin/staff vs public vs anonymous)
 - Protected management interfaces (reuse existing CRUD under `/dashboard/*` or similar access controls)
-- Public appointment booking interface (new, streamlined form at `/booking`)
-- API endpoint security enhancements
-- Responsive design for all device types
+- API endpoint security enhancements (401/403 responses)
+- Login page
+- Auth context/provider (frontend state management)
+- Route protection middleware
+- Conditional navigation based on auth state
+- Logout functionality
+- Access denied page
+- Edit/delete action wiring in list components
+- Auth and integration tests
 
-### Out of Scope
+### Out of Scope (for both Phase 3 and Phase 4)
 - Advanced reporting/analytics
 - User profile management for staff
 - Notification systems (email/SMS)
@@ -29,9 +45,9 @@ This feature focuses on creating a secure role-based access system for the Agent
 Based on the mission and tech stack specifications:
 
 ### Technical Decisions
-1. **Authentication**: Use Next.js API routes with JWT or session-based auth
-2. **Database**: Continue using SQLite with Prisma ORM for TypeScript safety
-3. **State Management**: React Context or Zustand for auth state
+1. **Authentication**: Use Next.js API routes with JWT or session-based auth (decision pending — Phase 4 will choose)
+2. **Database**: Continue using SQLite with Prisma ORM for TypeScript safety (Note: current implementation uses raw `better-sqlite3`, not Prisma — decision needed)
+3. **State Management**: React Context or Zustand for auth state (decision pending — Phase 4 will choose)
 4. **Styling**: PicoCSS for consistent, lightweight styling
 5. **API Design**: RESTful endpoints following standard conventions
 
@@ -40,7 +56,7 @@ Based on the mission and tech stack specifications:
 2. **Role Separation**: Clear visual distinction between staff dashboard and public booking
 3. **Simple Forms**: Minimal form fields with clear validation feedback
 4. **List Views**: Therapy/ailment management uses table/list views with actions
-5. **Booking Flow**: Streamlined 3-step booking process (select date/time, confirm details, submit)
+5. **Booking Flow**: Streamlined booking process (select agent/ailment/therapy/date, confirm)
 
 ## Context
 ### Project Alignment
