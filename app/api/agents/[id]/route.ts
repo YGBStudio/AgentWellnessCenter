@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
 import { updateAgentSchema, parseId, formatZodError } from '@/lib/validation'
+import { requireAuth } from '@/lib/auth/middleware'
 
 const queryService = new QueryService()
 
@@ -26,6 +27,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const agentId = parseId(id)
@@ -55,6 +59,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const authError = await requireAuth(request)
+  if (authError) return authError
+
   try {
     const { id } = await params
     const agentId = parseId(id)

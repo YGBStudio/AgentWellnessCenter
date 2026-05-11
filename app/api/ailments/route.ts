@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
 import { createAilmentSchema, formatZodError } from '@/lib/validation'
+import { requireAuth } from '@/lib/auth/middleware'
 
 const queryService = new QueryService()
 
@@ -14,6 +15,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const authError = await requireAuth(request as unknown as NextRequest)
+  if (authError) return authError
+
   try {
     const body = await request.json()
     const result = createAilmentSchema.safeParse(body)
