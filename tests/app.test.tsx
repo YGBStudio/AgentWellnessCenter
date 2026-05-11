@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 
@@ -10,7 +10,28 @@ vi.mock('@/lib/services/queryService', () => ({
     getAppointmentCount: vi.fn().mockReturnValue(5),
     getAilmentCount: vi.fn().mockReturnValue(2),
     getTherapyCount: vi.fn().mockReturnValue(4),
+    getAgents: vi.fn().mockReturnValue([]),
+    getAilments: vi.fn().mockReturnValue([]),
+    getTherapies: vi.fn().mockReturnValue([]),
+    getAppointments: vi.fn().mockReturnValue([]),
+    getAgentById: vi.fn(),
+    getAilmentById: vi.fn(),
+    getTherapyById: vi.fn(),
+    getAppointmentById: vi.fn(),
   })),
+}))
+
+// Mock auth context for all client components that use useAuth
+vi.mock('@/lib/auth/context', () => ({
+  useAuth: () => ({
+    user: { id: 1, email: 'admin@agentclinic.demo', role: 'admin' },
+    isAuthenticated: true,
+    role: 'admin',
+    loading: false,
+    login: vi.fn(),
+    logout: vi.fn(),
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
 // Next.js async server components return a Promise<JSX.Element>.
@@ -24,6 +45,10 @@ async function renderAsyncComponent(Component: typeof HomePage | typeof Dashboar
 }
 
 describe('App Page Tests', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('renders home page with correct heading', async () => {
     await renderAsyncComponent(HomePage)
     expect(screen.getByRole('heading', { level: 1, name: 'Agent Wellness Center' })).toBeInTheDocument()
@@ -44,7 +69,7 @@ describe('App Page Tests', () => {
 describe('Dashboard Page Tests', () => {
   it('shows dashboard heading', async () => {
     await renderAsyncComponent(DashboardPage)
-    expect(screen.getByRole('heading', { level: 2, name: /dashboard/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Clinic Dashboard/i })).toBeInTheDocument()
   })
 
   it('displays mocked dashboard metrics', async () => {

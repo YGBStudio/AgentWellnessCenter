@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import Database from 'better-sqlite3'
 import { initializeDatabase } from './schema'
-import type { Agent, Ailment, Therapy, Appointment } from './types'
+import type { Agent, Ailment, Therapy, Appointment, User } from './types'
 
 describe('Database Schema', () => {
   let db: Database.Database
@@ -17,6 +17,13 @@ describe('Database Schema', () => {
   })
 
   describe('Table Creation', () => {
+    it('should create users table', () => {
+      const table = db.prepare(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
+      ).get()
+      expect(table).toBeDefined()
+    })
+
     it('should create agents table', () => {
       const tables = db.prepare(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='agents'"
@@ -176,6 +183,21 @@ describe('Database Schema', () => {
   })
 
   describe('TypeScript Types', () => {
+    it('should match User interface structure', () => {
+      const stmt = db.prepare(
+        'INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)'
+      )
+      const result = stmt.run('test@test.com', 'hashedpass', 'admin')
+
+      const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid) as User
+
+      expect(user).toHaveProperty('id')
+      expect(user).toHaveProperty('email')
+      expect(user).toHaveProperty('password_hash')
+      expect(user).toHaveProperty('role')
+      expect(user).toHaveProperty('created_at')
+    })
+
     it('should match Agent interface structure', () => {
       const stmt = db.prepare(
         'INSERT INTO agents (name, type) VALUES (?, ?)'
