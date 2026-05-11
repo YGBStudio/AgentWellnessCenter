@@ -1,4 +1,12 @@
 // Base types with required id/created_at — used for DB read results
+export interface User {
+  id: number
+  email: string
+  password_hash: string
+  role: 'admin' | 'staff'
+  created_at: string
+}
+
 export interface Agent {
   id: number
   name: string
@@ -33,6 +41,7 @@ export interface Appointment {
 }
 
 // Insert types — omit auto-generated fields
+export type UserInsert = Omit<User, 'id' | 'created_at'>
 export type AgentInsert = Omit<Agent, 'id' | 'created_at'>
 export type AilmentInsert = Omit<Ailment, 'id' | 'created_at'>
 export type TherapyInsert = Omit<Therapy, 'id' | 'created_at'>
