@@ -1,7 +1,9 @@
 import React from 'react'
 import Layout from '@/components/Layout'
+import { AuthProvider } from '@/lib/auth/context'
 import '@picocss/pico'
 import '@/styles/layout.css'
+import '@/styles/admin-layout.css'
 
 export const metadata = {
   title: 'Agent Wellness Center',
@@ -16,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Layout>{children}</Layout>
+        <AuthProvider>
+          <Layout>{children}</Layout>
+        </AuthProvider>
       </body>
     </html>
   )
