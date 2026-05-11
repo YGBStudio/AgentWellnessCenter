@@ -1,7 +1,11 @@
 import React from 'react'
 import type { Agent } from '@/lib/db/types'
 
-export default function AgentList({ agents, onEdit, onDelete }: {
+export default function AgentList({
+  agents,
+  onEdit,
+  onDelete,
+}: {
   agents: Agent[]
   onEdit?: (agent: Agent) => void
   onDelete?: (agent: Agent) => void
@@ -18,7 +22,7 @@ export default function AgentList({ agents, onEdit, onDelete }: {
           <th>Name</th>
           <th>Type</th>
           <th>Created</th>
-          {onEdit || onDelete ? <th>Actions</th> : null}
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -28,12 +32,10 @@ export default function AgentList({ agents, onEdit, onDelete }: {
             <td>{agent.name}</td>
             <td>{agent.type}</td>
             <td>{agent.created_at ? new Date(agent.created_at).toLocaleDateString() : 'N/A'}</td>
-            {onEdit || onDelete ? (
-              <td>
-                {onEdit && <button onClick={() => onEdit(agent)}>Edit</button>}
-                {onDelete && <button onClick={() => onDelete(agent)}>Delete</button>}
-              </td>
-            ) : null}
+            <td>
+              {onEdit && <button onClick={() => onEdit(agent)}>Edit</button>}
+              {onDelete && <button onClick={() => onDelete(agent)}>Delete</button>}
+            </td>
           </tr>
         ))}
       </tbody>

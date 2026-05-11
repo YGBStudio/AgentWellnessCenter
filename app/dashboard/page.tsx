@@ -4,12 +4,14 @@ import { QueryService } from '@/lib/services/queryService'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-export default async function Home() {
+export default async function DashboardPage() {
   let agentCount = 0
   let appointmentCount = 0
   let ailmentCount = 0
   let therapyCount = 0
 
+  // We can still show counts even without auth for the component to render,
+  // but the page itself is protected by middleware.
   try {
     const queryService = new QueryService()
     agentCount = queryService.getAgentCount()

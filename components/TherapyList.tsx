@@ -1,7 +1,11 @@
 import React from 'react'
 import type { Therapy } from '@/lib/db/types'
 
-export default function TherapyList({ therapies, onEdit, onDelete }: {
+export default function TherapyList({
+  therapies,
+  onEdit,
+  onDelete,
+}: {
   therapies: Therapy[]
   onEdit?: (therapy: Therapy) => void
   onDelete?: (therapy: Therapy) => void
@@ -19,7 +23,7 @@ export default function TherapyList({ therapies, onEdit, onDelete }: {
           <th>Description</th>
           <th>Duration (min)</th>
           <th>Created</th>
-          {onEdit || onDelete ? <th>Actions</th> : null}
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -30,12 +34,10 @@ export default function TherapyList({ therapies, onEdit, onDelete }: {
             <td>{therapy.description}</td>
             <td>{therapy.duration}</td>
             <td>{therapy.created_at ? new Date(therapy.created_at).toLocaleDateString() : 'N/A'}</td>
-            {onEdit || onDelete ? (
-              <td>
-                {onEdit && <button onClick={() => onEdit(therapy)}>Edit</button>}
-                {onDelete && <button onClick={() => onDelete(therapy)}>Delete</button>}
-              </td>
-            ) : null}
+            <td>
+              {onEdit && <button onClick={() => onEdit(therapy)}>Edit</button>}
+              {onDelete && <button onClick={() => onDelete(therapy)}>Delete</button>}
+            </td>
           </tr>
         ))}
       </tbody>

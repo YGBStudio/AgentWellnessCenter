@@ -2,9 +2,15 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import type { Ailment } from '@/lib/db/types'
 
-export default function AilmentForm() {
-  const router = useRouter()
+interface AilmentFormProps {
+  ailment?: Ailment
+  onCancel?: () => void
+  onSubmit: (formData: FormData) => void | Promise<void>
+}
+
+export default function AilmentForm({ ailment, onCancel, onSubmit }: AilmentFormProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -14,28 +20,18 @@ export default function AilmentForm() {
     setErrorMessage('')
 
     const formData = new FormData(e.currentTarget)
-    const name = formData.get('name') as string
-    const description = formData.get('description') as string
-    const severity = formData.get('severity') as string
 
-    if (!name || !description || !severity) return
+    if (!formData.get('name') || !formData.get('description') || !formData.get('severity')) {
+      setStatus('error')
+      setErrorMessage('Please fill in all fields.')
+      setStatus('idle')
+      return
+    }
 
     try {
-      const res = await fetch('/api/ailments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description, severity })
-      })
-
-      if (res.ok) {
-        setStatus('success')
-        e.currentTarget.reset()
-        router.refresh()
-      } else {
-        const data = await res.json()
-        setStatus('error')
-        setErrorMessage(data.error || 'Failed to create ailment')
-      }
+      await onSubmit(formData)
+      setStatus('success')
+      e.currentTarget.reset()
     } catch {
       setStatus('error')
       setErrorMessage('Network error. Please try again.')
@@ -44,17 +40,30 @@ export default function AilmentForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Ailment added successfully!</p>}
+      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Success!</p>}
       {status === 'error' && <p role="alert" style={{ color: 'red' }}>{errorMessage}</p>}
 
       <label htmlFor="name">Ailment Name</label>
-      <input type="text" id="name" name="name" required placeholder="Enter ailment name" />
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        placeholder="Enter ailment name"
+        defaultValue={ailment?.name}
+      />
 
       <label htmlFor="description">Description</label>
-      <textarea id="description" name="description" required placeholder="Describe the ailment"></textarea>
+      <textarea
+        id="description"
+        name="description"
+        required
+        placeholder="Describe the ailment"
+        defaultValue={ailment?.description}
+      />
 
       <label htmlFor="severity">Severity</label>
-      <select id="severity" name="severity" required>
+      <select id="severity" name="severity" required defaultValue={ailment?.severity}>
         <option value="">Select severity</option>
         <option value="low">Low</option>
         <option value="medium">Medium</option>
@@ -62,9 +71,16 @@ export default function AilmentForm() {
         <option value="critical">Critical</option>
       </select>
 
-      <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
-        {status === 'loading' ? 'Adding…' : 'Add Ailment'}
-      </button>
+      <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
+          {status === 'loading' ? 'Saving…' : ailment ? 'Update Ailment' : 'Add Ailment'}
+        </button>
+        {ailment && onCancel && (
+          <button type="button" onClick={onCancel} style={{ backgroundColor: 'var(--pico-muted-color)' }}>
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   )
 }

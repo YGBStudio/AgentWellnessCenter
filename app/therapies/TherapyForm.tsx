@@ -1,10 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import type { Therapy } from '@/lib/db/types'
 
-export default function TherapyForm() {
-  const router = useRouter()
+interface TherapyFormProps {
+  therapy?: Therapy
+  onCancel?: () => void
+  onSubmit: (formData: FormData) => void | Promise<void>
+}
+
+export default function TherapyForm({ therapy, onCancel, onSubmit }: TherapyFormProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -14,28 +19,18 @@ export default function TherapyForm() {
     setErrorMessage('')
 
     const formData = new FormData(e.currentTarget)
-    const name = formData.get('name') as string
-    const description = formData.get('description') as string
-    const duration = formData.get('duration') as string
 
-    if (!name || !description || !duration) return
+    if (!formData.get('name') || !formData.get('description') || !formData.get('duration')) {
+      setStatus('error')
+      setErrorMessage('Please fill in all fields.')
+      setStatus('idle')
+      return
+    }
 
     try {
-      const res = await fetch('/api/therapies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description, duration: parseInt(duration) })
-      })
-
-      if (res.ok) {
-        setStatus('success')
-        e.currentTarget.reset()
-        router.refresh()
-      } else {
-        const data = await res.json()
-        setStatus('error')
-        setErrorMessage(data.error || 'Failed to create therapy')
-      }
+      await onSubmit(formData)
+      setStatus('success')
+      e.currentTarget.reset()
     } catch {
       setStatus('error')
       setErrorMessage('Network error. Please try again.')
@@ -44,21 +39,49 @@ export default function TherapyForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Therapy added successfully!</p>}
+      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Success!</p>}
       {status === 'error' && <p role="alert" style={{ color: 'red' }}>{errorMessage}</p>}
 
       <label htmlFor="name">Therapy Name</label>
-      <input type="text" id="name" name="name" required placeholder="Enter therapy name" />
+      <input
+        type="text"
+        id="name"
+        name="name"
+        required
+        placeholder="Enter therapy name"
+        defaultValue={therapy?.name}
+      />
 
       <label htmlFor="description">Description</label>
-      <textarea id="description" name="description" required placeholder="Describe the therapy"></textarea>
+      <textarea
+        id="description"
+        name="description"
+        required
+        placeholder="Describe the therapy"
+        defaultValue={therapy?.description}
+      />
 
       <label htmlFor="duration">Duration (minutes)</label>
-      <input type="number" id="duration" name="duration" required placeholder="Enter duration in minutes" min="1" />
+      <input
+        type="number"
+        id="duration"
+        name="duration"
+        required
+        placeholder="Enter duration in minutes"
+        min="1"
+        defaultValue={therapy?.duration}
+      />
 
-      <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
-        {status === 'loading' ? 'Adding…' : 'Add Therapy'}
-      </button>
+      <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
+          {status === 'loading' ? 'Saving…' : therapy ? 'Update Therapy' : 'Add Therapy'}
+        </button>
+        {therapy && onCancel && (
+          <button type="button" onClick={onCancel} style={{ backgroundColor: 'var(--pico-muted-color)' }}>
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   )
 }

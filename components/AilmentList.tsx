@@ -1,7 +1,11 @@
 import React from 'react'
 import type { Ailment } from '@/lib/db/types'
 
-export default function AilmentList({ ailments, onEdit, onDelete }: {
+export default function AilmentList({
+  ailments,
+  onEdit,
+  onDelete,
+}: {
   ailments: Ailment[]
   onEdit?: (ailment: Ailment) => void
   onDelete?: (ailment: Ailment) => void
@@ -19,7 +23,7 @@ export default function AilmentList({ ailments, onEdit, onDelete }: {
           <th>Description</th>
           <th>Severity</th>
           <th>Created</th>
-          {onEdit || onDelete ? <th>Actions</th> : null}
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -30,12 +34,10 @@ export default function AilmentList({ ailments, onEdit, onDelete }: {
             <td>{ailment.description}</td>
             <td>{ailment.severity}</td>
             <td>{ailment.created_at ? new Date(ailment.created_at).toLocaleDateString() : 'N/A'}</td>
-            {onEdit || onDelete ? (
-              <td>
-                {onEdit && <button onClick={() => onEdit(ailment)}>Edit</button>}
-                {onDelete && <button onClick={() => onDelete(ailment)}>Delete</button>}
-              </td>
-            ) : null}
+            <td>
+              {onEdit && <button onClick={() => onEdit(ailment)}>Edit</button>}
+              {onDelete && <button onClick={() => onDelete(ailment)}>Delete</button>}
+            </td>
           </tr>
         ))}
       </tbody>

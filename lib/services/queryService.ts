@@ -1,6 +1,6 @@
 import { getDb } from '../db/client'
 import Database from 'better-sqlite3'
-import type { Agent, Ailment, Therapy, Appointment, AgentInsert, AilmentInsert, TherapyInsert, AppointmentInsert } from '../db/types'
+import type { User, UserInsert, Agent, Ailment, Therapy, Appointment, AgentInsert, AilmentInsert, TherapyInsert, AppointmentInsert } from '../db/types'
 
 export class QueryService {
   private db: Database.Database
@@ -11,6 +11,25 @@ export class QueryService {
 
   getDb(): Database.Database {
     return this.db
+  }
+
+  // User operations
+  getUserByEmail(email: string): User | undefined {
+    return this.getDb().prepare('SELECT * FROM users WHERE email = ?').get(email) as User | undefined
+  }
+
+  createUser(user: UserInsert): number {
+    const result = this.getDb().prepare('INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)').run(
+      user.email,
+      user.password_hash,
+      user.role
+    )
+    return result.lastInsertRowid as number
+  }
+
+  getUserCount(): number {
+    const row = this.getDb().prepare('SELECT COUNT(*) as count FROM users').get() as { count: number }
+    return row.count
   }
 
   // Agent CRUD operations

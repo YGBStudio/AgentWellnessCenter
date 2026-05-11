@@ -1,12 +1,23 @@
 import React from 'react'
 import type { Appointment, Agent, Ailment, Therapy } from '@/lib/db/types'
 
-export default function AppointmentList({ appointments, agents, ailments, therapies }: {
+interface AppointmentListProps {
   appointments: Appointment[]
   agents: Agent[]
   ailments: Ailment[]
   therapies: Therapy[]
-}) {
+  onEdit?: (appointment: Appointment) => void
+  onDelete?: (appointment: Appointment) => void
+}
+
+export default function AppointmentList({
+  appointments,
+  agents,
+  ailments,
+  therapies,
+  onEdit,
+  onDelete,
+}: AppointmentListProps) {
   if (appointments.length === 0) {
     return <p>No appointments scheduled yet.</p>
   }
@@ -21,13 +32,14 @@ export default function AppointmentList({ appointments, agents, ailments, therap
           <th>Therapy</th>
           <th>Date</th>
           <th>Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         {appointments.map((appointment) => {
-          const agent = agents.find(a => a.id === appointment.agent_id)
-          const ailment = ailments.find(a => a.id === appointment.ailment_id)
-          const therapy = therapies.find(t => t.id === appointment.therapy_id)
+          const agent = agents.find((a) => a.id === appointment.agent_id)
+          const ailment = ailments.find((a) => a.id === appointment.ailment_id)
+          const therapy = therapies.find((t) => t.id === appointment.therapy_id)
           return (
             <tr key={appointment.id}>
               <td>{appointment.id}</td>
@@ -36,6 +48,10 @@ export default function AppointmentList({ appointments, agents, ailments, therap
               <td>{therapy?.name || `Therapy #${appointment.therapy_id}`}</td>
               <td>{appointment.date ? new Date(appointment.date).toLocaleString() : 'N/A'}</td>
               <td>{appointment.status}</td>
+              <td>
+                {onEdit && <button onClick={() => onEdit(appointment)}>Edit</button>}
+                {onDelete && <button onClick={() => onDelete(appointment)}>Delete</button>}
+              </td>
             </tr>
           )
         })}
