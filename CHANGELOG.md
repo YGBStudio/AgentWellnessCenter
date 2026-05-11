@@ -52,5 +52,15 @@
 - test(app): fix dashboard tests to match updated home page and add dashboard page tests
 - test(app): fix type annotation in test helper function and config(ts): add baseUrl to tsconfig for path aliases
 - test(app): improve type safety in test helper function
+## 2026-05-10
+- docs: update phase 3 status and add phase 4/5 specs
 
-
+## 2026-05-11
+- chore(deps): update dependencies and lockfile
+- feat(db): update schema, client and add seed data
+- feat(auth): implement auth logic and middleware
+- feat(api): implement auth and update resource API routes
+- feat(ui): implement admin layout and update global layout
+- feat(ui): add login and access denied pages
+- feat(ui): update resource management pages and components
+- test: update application and auth tests
