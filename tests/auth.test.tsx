@@ -1,9 +1,10 @@
 // @vitest-environment node
-import { TextEncoder, TextDecoder } from 'util';
-global.TextEncoder = TextEncoder as any;
-global.TextDecoder = TextDecoder as any;
+import { TextDecoder, TextEncoder } from 'util'
+globalThis.TextEncoder = TextEncoder
+globalThis.TextDecoder = TextDecoder
 
 import Database from 'better-sqlite3'
+import bcrypt from 'bcryptjs'
 import { initializeDatabase } from '@/lib/db/schema'
 import { hashPassword, verifyPassword, signToken, verifyToken as verifyTokenFn } from '@/lib/auth/utils'
 import { serializeCookie } from '@/lib/auth/cookies'
@@ -102,7 +103,7 @@ describe('QueryService User Methods', () => {
     initializeDatabase(db)
     queryService = new QueryService(db)
 
-    const hash = require('bcryptjs').hashSync('admin', 10)
+    const hash = bcrypt.hashSync('admin', 10)
     queryService.createUser({ email: 'admin@agentclinic.demo', password_hash: hash, role: 'admin' })
   })
 
@@ -111,7 +112,7 @@ describe('QueryService User Methods', () => {
   })
 
   it('registers a user with email, password hash, and role', () => {
-    const hash = require('bcryptjs').hashSync('password123', 10)
+    const hash = bcrypt.hashSync('password123', 10)
     const id = queryService.createUser({ email: 'test@example.com', password_hash: hash, role: 'staff' })
     expect(typeof id).toBe('number')
     expect(id).toBeGreaterThan(1)
@@ -131,7 +132,7 @@ describe('QueryService User Methods', () => {
 
   it('returns correct user count', () => {
     expect(queryService.getUserCount()).toBe(1)
-    const hash = require('bcryptjs').hashSync('pass', 10)
+    const hash = bcrypt.hashSync('pass', 10)
     queryService.createUser({ email: 'staff@example.com', password_hash: hash, role: 'staff' })
     expect(queryService.getUserCount()).toBe(2)
   })
@@ -140,7 +141,7 @@ describe('QueryService User Methods', () => {
     const user = queryService.getUserByEmail('admin@agentclinic.demo')
     expect(user).toBeDefined()
     if (user) {
-      const isValid = await require('bcryptjs').compare('admin', user.password_hash)
+      const isValid = await bcrypt.compare('admin', user.password_hash)
       expect(isValid).toBe(true)
     }
   })
@@ -150,7 +151,7 @@ describe('QueryService User Methods', () => {
 // Unit Tests: Auth Middleware
 // ============================================================
 describe('Auth Middleware', () => {
-  function makeRequest(headers: Record<string, string> = {}): InstanceType<typeof NextRequest> {
+  function makeRequest(headers: Record<string, string> = {}): NextRequest {
     return new NextRequest('http://localhost/', { headers })
   }
 
@@ -160,24 +161,24 @@ describe('Auth Middleware', () => {
       const req = makeRequest({
         cookie: `agentclinic_session=${encodeURIComponent(token)}`,
       })
-      const result = await requireAuth(req as any)
+      const result = await requireAuth(req)
       expect(result).toBeNull()
     })
 
     it('returns error response for request without token', async () => {
       const req = makeRequest()
-      const result = await requireAuth(req as any)
+      const result = await requireAuth(req)
       expect(result).not.toBeNull()
-      expect((result as any).status).toBe(401)
+      expect(result?.status).toBe(401)
     })
 
     it('returns error response for request with invalid token', async () => {
       const req = makeRequest({
         cookie: 'agentclinic_session=invalid-token',
       })
-      const result = await requireAuth(req as any)
+      const result = await requireAuth(req)
       expect(result).not.toBeNull()
-      expect((result as any).status).toBe(401)
+      expect(result?.status).toBe(401)
     })
   })
 
@@ -187,7 +188,7 @@ describe('Auth Middleware', () => {
       const req = makeRequest({
         cookie: `agentclinic_session=${encodeURIComponent(token)}`,
       })
-      const result = await requireRole(req as any, ['admin'])
+      const result = await requireRole(req, ['admin'])
       expect(result).toBeNull()
     })
 
@@ -196,7 +197,7 @@ describe('Auth Middleware', () => {
       const req = makeRequest({
         cookie: `agentclinic_session=${encodeURIComponent(token)}`,
       })
-      const result = await requireRole(req as any, ['admin', 'staff'])
+      const result = await requireRole(req, ['admin', 'staff'])
       expect(result).toBeNull()
     })
 
@@ -205,16 +206,16 @@ describe('Auth Middleware', () => {
       const req = makeRequest({
         cookie: `agentclinic_session=${encodeURIComponent(token)}`,
       })
-      const result = await requireRole(req as any, ['admin'])
+      const result = await requireRole(req, ['admin'])
       expect(result).not.toBeNull()
-      expect((result as any).status).toBe(403)
+      expect(result?.status).toBe(403)
     })
 
     it('returns 401 for unauthenticated request', async () => {
       const req = makeRequest()
-      const result = await requireRole(req as any, ['admin'])
+      const result = await requireRole(req, ['admin'])
       expect(result).not.toBeNull()
-      expect((result as any).status).toBe(401)
+      expect(result?.status).toBe(401)
     })
   })
 
@@ -224,7 +225,7 @@ describe('Auth Middleware', () => {
       const req = makeRequest({
         cookie: `agentclinic_session=${encodeURIComponent(token)}`,
       })
-      const user = await getAuthUser(req as any)
+      const user = await getAuthUser(req)
       expect(user).toEqual(
         expect.objectContaining({ email: 'test@test.com', role: 'admin', userId: 42 })
       )
@@ -232,7 +233,7 @@ describe('Auth Middleware', () => {
 
     it('returns null when no cookie present', async () => {
       const req = makeRequest()
-      const user = await getAuthUser(req as any)
+      const user = await getAuthUser(req)
       expect(user).toBeNull()
     })
 
@@ -240,7 +241,7 @@ describe('Auth Middleware', () => {
       const req = makeRequest({
         cookie: 'agentclinic_session=',
       })
-      const user = await getAuthUser(req as any)
+      const user = await getAuthUser(req)
       expect(user).toBeNull()
     })
   })
@@ -250,14 +251,14 @@ describe('Auth Middleware', () => {
 // Integration Tests: API Auth Flow
 // ============================================================
 describe('Integration: Auth API Flow', () => {
-  let tempDb: any
+  let tempDb: Database.Database
 
   beforeEach(() => {
     tempDb = new Database(':memory:')
     tempDb.pragma('foreign_keys = ON')
     initializeDatabase(tempDb)
 
-    const hash = require('bcryptjs').hashSync('admin', 10)
+    const hash = bcrypt.hashSync('admin', 10)
     const qService = new QueryService(tempDb)
     qService.createUser({ email: 'admin@agentclinic.demo', password_hash: hash, role: 'admin' })
   })
@@ -271,7 +272,7 @@ describe('Integration: Auth API Flow', () => {
     const user = qService.getUserByEmail('admin@agentclinic.demo')
     expect(user).toBeDefined()
 
-    const isValid = await require('bcryptjs').compare('admin', user!.password_hash)
+    const isValid = await bcrypt.compare('admin', user!.password_hash)
     expect(isValid).toBe(true)
 
     const token = await signToken({ email: user!.email, role: user!.role, userId: user!.id })
@@ -286,7 +287,7 @@ describe('Integration: Auth API Flow', () => {
     const user = qService.getUserByEmail('admin@agentclinic.demo')
     expect(user).toBeDefined()
 
-    const isValid = await require('bcryptjs').compare('wrongpassword', user!.password_hash)
+    const isValid = await bcrypt.compare('wrongpassword', user!.password_hash)
     expect(isValid).toBe(false)
   })
 
@@ -298,9 +299,9 @@ describe('Integration: Auth API Flow', () => {
 
   it('requireAuth returns 401 for unauthenticated POST request', async () => {
     const req = new NextRequest('http://localhost/api/agents', { method: 'POST' })
-    const result = await requireAuth(req as any)
+    const result = await requireAuth(req)
     expect(result).not.toBeNull()
-    expect((result as any).status).toBe(401)
+    expect(result?.status).toBe(401)
   })
 
   it('requireAuth passes for authenticated POST request', async () => {
@@ -309,7 +310,7 @@ describe('Integration: Auth API Flow', () => {
       method: 'POST',
       headers: { cookie: `agentclinic_session=${encodeURIComponent(token)}` },
     })
-    const result = await requireAuth(req as any)
+    const result = await requireAuth(req)
     expect(result).toBeNull()
   })
 
@@ -319,8 +320,8 @@ describe('Integration: Auth API Flow', () => {
       method: 'DELETE',
       headers: { cookie: `agentclinic_session=${encodeURIComponent(token)}` },
     })
-    const result = await requireRole(req as any, ['admin'])
+    const result = await requireRole(req, ['admin'])
     expect(result).not.toBeNull()
-    expect((result as any).status).toBe(403)
+    expect(result?.status).toBe(403)
   })
 })
