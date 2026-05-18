@@ -34,6 +34,11 @@ vi.mock('@/lib/auth/context', () => ({
   AuthProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }))
 
+vi.mock('next/navigation', () => ({
+  usePathname: () => '/dashboard',
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
 // Next.js async server components return a Promise<JSX.Element>.
 // We import the module then resolve it for rendering.
 import HomePage from '@/app/page'
