@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
 import { updateTherapySchema, parseId, formatZodError } from '@/lib/validation'
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireRole } from '@/lib/auth/middleware'
 
 const queryService = new QueryService()
 
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const authError = await requireAuth(request)
+  const authError = await requireRole(request, ['admin', 'staff'])
   if (authError) return authError
 
   try {
@@ -59,7 +59,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const authError = await requireAuth(request)
+  const authError = await requireRole(request, ['admin', 'staff'])
   if (authError) return authError
 
   try {

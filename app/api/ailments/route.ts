@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { QueryService } from '@/lib/services/queryService'
 import { createAilmentSchema, formatZodError } from '@/lib/validation'
-import { requireAuth } from '@/lib/auth/middleware'
+import { requireRole } from '@/lib/auth/middleware'
 
 const queryService = new QueryService()
 
@@ -15,7 +15,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const authError = await requireAuth(request as unknown as NextRequest)
+  const authError = await requireRole(request as unknown as NextRequest, ['admin', 'staff'])
   if (authError) return authError
 
   try {

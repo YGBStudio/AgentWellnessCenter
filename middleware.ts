@@ -33,7 +33,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check if the route is protected
-  const requiredRoles = PROTECTED_ROUTES.find((route) => route.path === pathname)?.roles
+  const requiredRoles = PROTECTED_ROUTES.find((route) =>
+    pathname === route.path || pathname.startsWith(`${route.path}/`)
+  )?.roles
 
   if (requiredRoles) {
     // Not authenticated → redirect to login
