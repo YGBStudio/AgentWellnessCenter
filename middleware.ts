@@ -15,8 +15,6 @@ const PROTECTED_ROUTES: ProtectedRoute[] = [
   { path: '/appointments', roles: ['admin', 'staff'] },
 ]
 
-const PUBLIC_ROUTES = ['/', '/booking', '/booking/confirmation', '/login']
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 

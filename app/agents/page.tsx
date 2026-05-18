@@ -80,7 +80,11 @@ export default function AgentsPage() {
       </header>
       <section className="page-content">
         <h2>Registered Agents</h2>
-        <AgentList agents={agents} onEdit={handleEdit} onDelete={handleDelete} />
+        {loading ? (
+          <p className="empty-state" role="status">Loading agents...</p>
+        ) : (
+          <AgentList agents={agents} onEdit={handleEdit} onDelete={handleDelete} />
+        )}
 
         {editingAgent && (
           <div className="edit-section">

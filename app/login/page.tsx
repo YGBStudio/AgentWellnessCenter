@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import LoginForm from './LoginForm'
 
 export const metadata = {
@@ -8,15 +8,15 @@ export const metadata = {
 
 export default function LoginPage() {
   return (
-    <section className="container">
-      <header className="page-header" style={{ textAlign: 'center' }}>
+    <section className="content-section content-section--narrow">
+      <header className="page-header page-header--center">
         <h1>Agent Wellness Center</h1>
         <p>Sign in to access the staff dashboard.</p>
       </header>
 
-      <div style={{ maxWidth: '420px', margin: '0 auto' }}>
+      <Suspense fallback={<div className="empty-state">Loading sign-in form...</div>}>
         <LoginForm />
-      </div>
+      </Suspense>
     </section>
   )
 }

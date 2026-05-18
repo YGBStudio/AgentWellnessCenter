@@ -8,13 +8,10 @@ export const metadata = {
 
 export default function AccessDeniedPage() {
   return (
-    <section className="container">
-      <article
-        className="card shadow"
-        style={{ maxWidth: '500px', margin: '4rem auto', textAlign: 'center' }}
-      >
+    <section className="content-section">
+      <article className="feedback-card">
         <header>
-          <h1 style={{ fontSize: '2.5rem', margin: '0' }}>🔒</h1>
+          <div className="feedback-icon" aria-hidden="true">!</div>
           <h2>Access Denied</h2>
           <p>You don&apos;t have permission to view this page.</p>
         </header>
@@ -24,13 +21,14 @@ export default function AccessDeniedPage() {
         </p>
 
         <footer>
-          <Link href="/" role="button" className="contrast">
-            Return to Home
-          </Link>
-          &nbsp;
-          <Link href="/dashboard" role="button" className="secondary">
-            Try Dashboard
-          </Link>
+          <div className="cta-group">
+            <Link href="/" role="button" className="contrast">
+              Return to Home
+            </Link>
+            <Link href="/dashboard" role="button" className="secondary">
+              Try Dashboard
+            </Link>
+          </div>
         </footer>
       </article>
     </section>

@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import type { Ailment } from '@/lib/db/types'
 
 interface AilmentFormProps {
@@ -24,7 +23,6 @@ export default function AilmentForm({ ailment, onCancel, onSubmit }: AilmentForm
     if (!formData.get('name') || !formData.get('description') || !formData.get('severity')) {
       setStatus('error')
       setErrorMessage('Please fill in all fields.')
-      setStatus('idle')
       return
     }
 
@@ -39,9 +37,9 @@ export default function AilmentForm({ ailment, onCancel, onSubmit }: AilmentForm
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Success!</p>}
-      {status === 'error' && <p role="alert" style={{ color: 'red' }}>{errorMessage}</p>}
+    <form onSubmit={handleSubmit} className="resource-form">
+      {status === 'success' && <p role="status" className="form-success">Success!</p>}
+      {status === 'error' && <p role="alert" className="form-error">{errorMessage}</p>}
 
       <label htmlFor="name">Ailment Name</label>
       <input
@@ -71,12 +69,12 @@ export default function AilmentForm({ ailment, onCancel, onSubmit }: AilmentForm
         <option value="critical">Critical</option>
       </select>
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="form-actions">
         <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
           {status === 'loading' ? 'Saving…' : ailment ? 'Update Ailment' : 'Add Ailment'}
         </button>
         {ailment && onCancel && (
-          <button type="button" onClick={onCancel} style={{ backgroundColor: 'var(--pico-muted-color)' }}>
+          <button type="button" onClick={onCancel} className="button-muted">
             Cancel
           </button>
         )}

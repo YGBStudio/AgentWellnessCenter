@@ -23,7 +23,6 @@ export default function TherapyForm({ therapy, onCancel, onSubmit }: TherapyForm
     if (!formData.get('name') || !formData.get('description') || !formData.get('duration')) {
       setStatus('error')
       setErrorMessage('Please fill in all fields.')
-      setStatus('idle')
       return
     }
 
@@ -38,9 +37,9 @@ export default function TherapyForm({ therapy, onCancel, onSubmit }: TherapyForm
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Success!</p>}
-      {status === 'error' && <p role="alert" style={{ color: 'red' }}>{errorMessage}</p>}
+    <form onSubmit={handleSubmit} className="resource-form">
+      {status === 'success' && <p role="status" className="form-success">Success!</p>}
+      {status === 'error' && <p role="alert" className="form-error">{errorMessage}</p>}
 
       <label htmlFor="name">Therapy Name</label>
       <input
@@ -72,12 +71,12 @@ export default function TherapyForm({ therapy, onCancel, onSubmit }: TherapyForm
         defaultValue={therapy?.duration}
       />
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="form-actions">
         <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
           {status === 'loading' ? 'Saving…' : therapy ? 'Update Therapy' : 'Add Therapy'}
         </button>
         {therapy && onCancel && (
-          <button type="button" onClick={onCancel} style={{ backgroundColor: 'var(--pico-muted-color)' }}>
+          <button type="button" onClick={onCancel} className="button-muted">
             Cancel
           </button>
         )}

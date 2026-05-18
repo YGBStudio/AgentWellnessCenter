@@ -14,13 +14,13 @@ function ConfirmationContent() {
   const formattedDate = date ? new Date(date).toLocaleString() : 'N/A'
 
   return (
-    <article className="card shadow" style={{ maxWidth: '600px', margin: '2rem auto', textAlign: 'center' }}>
+    <article className="surface-card confirmation-card">
       <header>
-        <h2 style={{ color: 'var(--pico-ins-color)' }}>Booking Confirmed!</h2>
+        <h2 className="status-heading--success">Booking Confirmed!</h2>
         <p>Your appointment has been successfully scheduled.</p>
       </header>
       
-      <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
+      <div className="summary-list">
         <p><strong>Agent:</strong> {agent}</p>
         <p><strong>Therapy:</strong> {therapy}</p>
         <p><strong>Scheduled For:</strong> {formattedDate}</p>
@@ -29,8 +29,10 @@ function ConfirmationContent() {
       <p>Please ensure your agent is powered on and connected at the scheduled time.</p>
 
       <footer>
-        <Link href="/booking" role="button" className="secondary">Book Another</Link>
-        <Link href="/" role="button" className="contrast" style={{ marginLeft: '1rem' }}>Back to Home</Link>
+        <div className="cta-group">
+          <Link href="/booking" role="button" className="secondary">Book Another</Link>
+          <Link href="/" role="button" className="contrast">Back to Home</Link>
+        </div>
       </footer>
     </article>
   )
@@ -38,8 +40,8 @@ function ConfirmationContent() {
 
 export default function ConfirmationPage() {
   return (
-    <section className="container">
-      <Suspense fallback={<div>Loading confirmation details...</div>}>
+    <section className="content-section">
+      <Suspense fallback={<div className="empty-state">Loading confirmation details...</div>}>
         <ConfirmationContent />
       </Suspense>
     </section>

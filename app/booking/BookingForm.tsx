@@ -69,13 +69,17 @@ export default function BookingForm({
   }
 
   return (
-    <article className="card shadow">
-       <header>
+    <article className="surface-card">
+      <header>
         <h3>Request an Appointment</h3>
         <p>Fill out the form below to schedule a care session for your AI agent.</p>
       </header>
       <form onSubmit={handleSubmit}>
-        {status === 'error' && <p role="alert" className="error-message" style={{ color: 'var(--pico-secondary-inverse)', backgroundColor: 'var(--pico-form-element-invalid-active-border-color)', padding: '0.5rem', borderRadius: 'var(--pico-border-radius)' }}>{errorMessage}</p>}
+        {status === 'error' && (
+          <p role="alert" className="form-error">
+            {errorMessage}
+          </p>
+        )}
 
         <div className="grid">
           <label htmlFor="agent_id">
@@ -116,7 +120,7 @@ export default function BookingForm({
           </label>
         </div>
 
-        <footer style={{ marginTop: '1rem' }}>
+        <footer className="form-actions">
           <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'} className="primary">
             {status === 'loading' ? 'Booking...' : 'Book Appointment'}
           </button>

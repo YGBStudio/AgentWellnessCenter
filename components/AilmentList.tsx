@@ -11,36 +11,40 @@ export default function AilmentList({
   onDelete?: (ailment: Ailment) => void
 }) {
   if (ailments.length === 0) {
-    return <p>No ailments recorded yet.</p>
+    return <p className="empty-state">No ailments recorded yet.</p>
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Severity</th>
-          <th>Created</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {ailments.map((ailment) => (
-          <tr key={ailment.id}>
-            <td>{ailment.id}</td>
-            <td>{ailment.name}</td>
-            <td>{ailment.description}</td>
-            <td>{ailment.severity}</td>
-            <td>{ailment.created_at ? new Date(ailment.created_at).toLocaleDateString() : 'N/A'}</td>
-            <td>
-              {onEdit && <button onClick={() => onEdit(ailment)}>Edit</button>}
-              {onDelete && <button onClick={() => onDelete(ailment)}>Delete</button>}
-            </td>
+    <div className="table-wrap">
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Severity</th>
+            <th>Created</th>
+            <th>Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {ailments.map((ailment) => (
+            <tr key={ailment.id}>
+              <td>{ailment.id}</td>
+              <td>{ailment.name}</td>
+              <td>{ailment.description}</td>
+              <td>{ailment.severity}</td>
+              <td>{ailment.created_at ? new Date(ailment.created_at).toLocaleDateString() : 'N/A'}</td>
+              <td>
+                <div className="table-actions">
+                  {onEdit && <button onClick={() => onEdit(ailment)}>Edit</button>}
+                  {onDelete && <button onClick={() => onDelete(ailment)}>Delete</button>}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

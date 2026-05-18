@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import type { Agent } from '@/lib/db/types'
 
 interface AgentFormProps {
@@ -11,7 +10,6 @@ interface AgentFormProps {
 }
 
 export default function AgentForm({ agent, onCancel, onSubmit }: AgentFormProps) {
-  const router = useRouter()
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -25,7 +23,6 @@ export default function AgentForm({ agent, onCancel, onSubmit }: AgentFormProps)
     if (!formData.get('name') || !formData.get('type')) {
       setStatus('error')
       setErrorMessage('Please fill in all fields.')
-      setStatus('idle')
       return
     }
 
@@ -40,9 +37,9 @@ export default function AgentForm({ agent, onCancel, onSubmit }: AgentFormProps)
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Success!</p>}
-      {status === 'error' && <p role="alert" style={{ color: 'red' }}>{errorMessage}</p>}
+    <form onSubmit={handleSubmit} className="resource-form">
+      {status === 'success' && <p role="status" className="form-success">Success!</p>}
+      {status === 'error' && <p role="alert" className="form-error">{errorMessage}</p>}
 
       <label htmlFor="name">Agent Name</label>
       <input
@@ -64,12 +61,12 @@ export default function AgentForm({ agent, onCancel, onSubmit }: AgentFormProps)
         defaultValue={agent?.type}
       />
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="form-actions">
         <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
           {status === 'loading' ? 'Saving…' : agent ? 'Update Agent' : 'Register Agent'}
         </button>
         {agent && onCancel && (
-          <button type="button" onClick={onCancel} style={{ backgroundColor: 'var(--pico-muted-color)' }}>
+          <button type="button" onClick={onCancel} className="button-muted">
             Cancel
           </button>
         )}

@@ -78,7 +78,11 @@ export default function TherapiesPage() {
       </header>
       <section className="page-content">
         <h2>Available Therapies</h2>
-        <TherapyList therapies={therapies} onEdit={handleEdit} onDelete={handleDelete} />
+        {loading ? (
+          <p className="empty-state" role="status">Loading therapies...</p>
+        ) : (
+          <TherapyList therapies={therapies} onEdit={handleEdit} onDelete={handleDelete} />
+        )}
 
         {editingTherapy && (
           <div className="edit-section">

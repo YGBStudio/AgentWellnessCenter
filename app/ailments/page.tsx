@@ -78,7 +78,11 @@ export default function AilmentsPage() {
       </header>
       <section className="page-content">
         <h2>Known Ailments</h2>
-        <AilmentList ailments={ailments} onEdit={handleEdit} onDelete={handleDelete} />
+        {loading ? (
+          <p className="empty-state" role="status">Loading ailments...</p>
+        ) : (
+          <AilmentList ailments={ailments} onEdit={handleEdit} onDelete={handleDelete} />
+        )}
 
         {editingAilment && (
           <div className="edit-section">

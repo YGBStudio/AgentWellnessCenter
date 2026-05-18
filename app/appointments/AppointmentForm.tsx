@@ -38,7 +38,6 @@ export default function AppointmentForm({
     ) {
       setStatus('error')
       setErrorMessage('Please fill in all fields.')
-      setStatus('idle')
       return
     }
 
@@ -52,9 +51,9 @@ export default function AppointmentForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {status === 'success' && <p role="alert" style={{ color: 'green' }}>Success!</p>}
-      {status === 'error' && <p role="alert" style={{ color: 'red' }}>{errorMessage}</p>}
+    <form onSubmit={handleSubmit} className="resource-form">
+      {status === 'success' && <p role="status" className="form-success">Success!</p>}
+      {status === 'error' && <p role="alert" className="form-error">{errorMessage}</p>}
 
       <label htmlFor="agent_id">Agent</label>
       <select id="agent_id" name="agent_id" required defaultValue={appointment?.agent_id}>
@@ -105,7 +104,7 @@ export default function AppointmentForm({
         <option value="cancelled">Cancelled</option>
       </select>
 
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="form-actions">
         <button type="submit" disabled={status === 'loading'} aria-busy={status === 'loading'}>
           {status === 'loading'
             ? 'Saving…'
@@ -114,7 +113,7 @@ export default function AppointmentForm({
               : 'Schedule Appointment'}
         </button>
         {appointment && onCancel && (
-          <button type="button" onClick={onCancel} style={{ backgroundColor: 'var(--pico-muted-color)' }}>
+          <button type="button" onClick={onCancel} className="button-muted">
             Cancel
           </button>
         )}

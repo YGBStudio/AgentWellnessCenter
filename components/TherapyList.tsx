@@ -11,36 +11,40 @@ export default function TherapyList({
   onDelete?: (therapy: Therapy) => void
 }) {
   if (therapies.length === 0) {
-    return <p>No therapies available yet.</p>
+    return <p className="empty-state">No therapies available yet.</p>
   }
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Duration (min)</th>
-          <th>Created</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {therapies.map((therapy) => (
-          <tr key={therapy.id}>
-            <td>{therapy.id}</td>
-            <td>{therapy.name}</td>
-            <td>{therapy.description}</td>
-            <td>{therapy.duration}</td>
-            <td>{therapy.created_at ? new Date(therapy.created_at).toLocaleDateString() : 'N/A'}</td>
-            <td>
-              {onEdit && <button onClick={() => onEdit(therapy)}>Edit</button>}
-              {onDelete && <button onClick={() => onDelete(therapy)}>Delete</button>}
-            </td>
+    <div className="table-wrap">
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Duration (min)</th>
+            <th>Created</th>
+            <th>Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {therapies.map((therapy) => (
+            <tr key={therapy.id}>
+              <td>{therapy.id}</td>
+              <td>{therapy.name}</td>
+              <td>{therapy.description}</td>
+              <td>{therapy.duration}</td>
+              <td>{therapy.created_at ? new Date(therapy.created_at).toLocaleDateString() : 'N/A'}</td>
+              <td>
+                <div className="table-actions">
+                  {onEdit && <button onClick={() => onEdit(therapy)}>Edit</button>}
+                  {onDelete && <button onClick={() => onDelete(therapy)}>Delete</button>}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

@@ -91,15 +91,6 @@ export function useAuth(): AuthContextType {
   return context
 }
 
-// Token management via httpOnly cookie-backed JWT stored in a client-side
-// surrogate cookie for SSR hydration. The actual httpOnly cookie is set by
-// the server; the surrogate stores just the encoded payload for client checks.
-function getToken(): string | null {
-  if (typeof window === 'undefined') return null
-  const match = document.cookie.match(/(?:^|; )agentclinic_session=([^;]+)/)
-  return match ? decodeURIComponent(match[1]) : null
-}
-
 function removeToken(): void {
   if (typeof document === 'undefined') return
   document.cookie = 'agentclinic_session=; Max-Age=0; path=/'

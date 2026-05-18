@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useId, useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth/context'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -20,9 +20,29 @@ const navigationItems = [
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const { isAuthenticated, role, logout } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
+  const sidebarId = useId()
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [mobileOpen])
+
   const handleLogout = () => {
+    setMobileOpen(false)
     logout()
     router.push('/')
   }
@@ -33,7 +53,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="admin-layout">
-      <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
+      <aside id={sidebarId} className={`sidebar ${mobileOpen ? 'open' : ''}`}>
         <div className="sidebar-brand">
           <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
             Agent Wellness Center
@@ -43,7 +63,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <ul>
             {navigationItems.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} onClick={() => setMobileOpen(false)}>
+                <Link
+                  href={item.href}
+                  aria-current={pathname === item.href ? 'page' : undefined}
+                  onClick={() => setMobileOpen(false)}
+                >
                   <span className="nav-icon">{item.icon}</span>
                   {item.label}
                 </Link>
@@ -51,7 +75,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             ))}
           </ul>
           <div className="sidebar-footer">
-            <button onClick={handleLogout} className="sidebar-logout">
+            <button type="button" onClick={handleLogout} className="sidebar-logout">
               🚪 Logout
             </button>
           </div>
@@ -61,9 +85,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <div className="admin-content">
         <header className="mobile-header">
           <button
+            type="button"
             className="menu-toggle"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle navigation"
+            aria-label={mobileOpen ? 'Close admin navigation' : 'Open admin navigation'}
+            aria-expanded={mobileOpen}
+            aria-controls={sidebarId}
           >
             ☰
           </button>

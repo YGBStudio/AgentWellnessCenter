@@ -14,12 +14,12 @@ export default async function BookingPage() {
 
   return (
     <>
-      <header className="page-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      <header className="page-header page-header--center">
         <h1>Agent Care Booking</h1>
         <p>Schedule a specialized therapy session for your AI agent. Quick, easy, and reliable.</p>
       </header>
       
-      <section className="container">
+      <section className="content-section content-section--narrow">
         <BookingForm 
           agents={agents} 
           ailments={ailments} 

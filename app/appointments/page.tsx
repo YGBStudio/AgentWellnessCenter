@@ -88,14 +88,18 @@ export default function AppointmentsPage() {
       </header>
       <section className="page-content">
         <h2>Scheduled Appointments</h2>
-        <AppointmentList
-          appointments={appointments}
-          agents={agents}
-          ailments={ailments}
-          therapies={therapies}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        {loading ? (
+          <p className="empty-state" role="status">Loading appointments...</p>
+        ) : (
+          <AppointmentList
+            appointments={appointments}
+            agents={agents}
+            ailments={ailments}
+            therapies={therapies}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
 
         {editingAppointment && (
           <div className="edit-section">
