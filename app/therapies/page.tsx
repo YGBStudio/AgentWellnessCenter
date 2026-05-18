@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { Therapy } from '@/lib/db/types'
 import TherapyForm from './TherapyForm'
 import TherapyList from '@/components/TherapyList'
+import AdminLayout from '@/components/AdminLayout'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,6 +14,8 @@ export default function TherapiesPage() {
   const [therapies, setTherapies] = useState<Therapy[]>([])
   const [loading, setLoading] = useState(true)
   const [editingTherapy, setEditingTherapy] = useState<Therapy | null>(null)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     fetch('/api/therapies')
@@ -21,22 +24,34 @@ export default function TherapiesPage() {
         setTherapies(data)
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch(() => {
+        setErrorMessage('Failed to load therapies. Please refresh and try again.')
+        setLoading(false)
+      })
   }, [])
+
+  const clearFeedback = () => {
+    setErrorMessage('')
+    setSuccessMessage('')
+  }
 
   const handleDelete = (therapy: Therapy) => {
     if (!confirm(`Are you sure you want to delete therapy "${therapy.name}"?`)) return
 
+    clearFeedback()
     fetch(`/api/therapies/${therapy.id}`, { method: 'DELETE' })
       .then((r) => {
         if (r.ok) {
           setTherapies((prev) => prev.filter((t) => t.id !== therapy.id))
           setEditingTherapy(null)
+          setSuccessMessage(`Deleted ${therapy.name}.`)
         } else {
-          r.json().then((data) => alert(data.error || 'Failed to delete therapy'))
+          r.json()
+            .then((data) => setErrorMessage(data.error || 'Failed to delete therapy.'))
+            .catch(() => setErrorMessage('Failed to delete therapy.'))
         }
       })
-      .catch(() => alert('Failed to delete therapy'))
+      .catch(() => setErrorMessage('Network error. Please try again.'))
   }
 
   const handleEdit = (therapy: Therapy) => {
@@ -45,6 +60,7 @@ export default function TherapiesPage() {
 
   const handleUpdate = async (formData: FormData) => {
     if (!editingTherapy) return
+    clearFeedback()
     try {
       const res = await fetch(`/api/therapies/${editingTherapy.id}`, {
         method: 'PUT',
@@ -60,23 +76,31 @@ export default function TherapiesPage() {
         const updated = await res.json()
         setTherapies((prev) => prev.map((t) => (t.id === updated.id ? updated : t)))
         setEditingTherapy(null)
+        setSuccessMessage(`Updated ${updated.name}.`)
         router.refresh()
       } else {
         const data = await res.json()
-        alert(data.error || 'Failed to update therapy')
+        const message = data.error || 'Failed to update therapy.'
+        setErrorMessage(message)
+        throw new Error(message)
       }
-    } catch {
-      alert('Network error. Please try again.')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Network error. Please try again.'
+      setErrorMessage(message)
+      throw new Error(message)
     }
   }
 
   return (
-    <>
+    <AdminLayout>
       <header className="page-header">
         <h1>Therapies</h1>
         <p>Manage available therapies and treatments.</p>
       </header>
       <section className="page-content">
+        {errorMessage && <p className="form-error" role="alert">{errorMessage}</p>}
+        {successMessage && <p className="form-success" role="status">{successMessage}</p>}
+
         <h2>Available Therapies</h2>
         {loading ? (
           <p className="empty-state" role="status">Loading therapies...</p>
@@ -98,6 +122,7 @@ export default function TherapiesPage() {
         <h2>Add New Therapy</h2>
         <TherapyForm
           onSubmit={async (formData) => {
+            clearFeedback()
             try {
               const res = await fetch('/api/therapies', {
                 method: 'POST',
@@ -112,17 +137,22 @@ export default function TherapiesPage() {
               if (res.ok) {
                 const created = await res.json()
                 setTherapies((prev) => [created, ...prev])
+                setSuccessMessage(`Added ${created.name}.`)
                 router.refresh()
               } else {
                 const data = await res.json()
-                alert(data.error || 'Failed to create therapy')
+                const message = data.error || 'Failed to create therapy.'
+                setErrorMessage(message)
+                throw new Error(message)
               }
-            } catch {
-              alert('Network error. Please try again.')
+            } catch (error) {
+              const message = error instanceof Error ? error.message : 'Network error. Please try again.'
+              setErrorMessage(message)
+              throw new Error(message)
             }
           }}
         />
       </section>
-    </>
+    </AdminLayout>
   )
 }

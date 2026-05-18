@@ -105,7 +105,11 @@
   margin-left: 260px;
 }
 
-.admin-content main {
+.admin-content--full {
+  margin-left: 0;
+}
+
+.admin-content__body {
   padding: 0;
 }
 

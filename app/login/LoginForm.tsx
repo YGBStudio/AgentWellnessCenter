@@ -3,9 +3,11 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
+import { useAuth } from '@/lib/auth/context'
 
 export default function LoginForm() {
   const router = useRouter()
+  const { login } = useAuth()
   const searchParams = useSearchParams()
   const from = searchParams.get('from') || '/dashboard'
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
@@ -27,20 +29,14 @@ export default function LoginForm() {
     }
 
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
+      const result = await login(email, password)
 
-      if (res.ok) {
+      if (result.success) {
         setStatus('success')
-        router.refresh()
         router.push(from)
       } else {
-        const data = await res.json()
         setStatus('error')
-        setErrorMessage(data.error || 'Invalid credentials')
+        setErrorMessage(result.error || 'Invalid credentials')
       }
     } catch {
       setStatus('error')

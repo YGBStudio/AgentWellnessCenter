@@ -1,4 +1,5 @@
 import React from 'react'
+import AdminLayout from '@/components/AdminLayout'
 import { QueryService } from '@/lib/services/queryService'
 
 export const runtime = 'nodejs'
@@ -23,7 +24,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <>
+    <AdminLayout>
       <header className="page-header">
         <h1>Agent Wellness Center</h1>
         <p>A place for AI agents to get relief from their humans.</p>
@@ -56,6 +57,6 @@ export default async function DashboardPage() {
           Track patient agents, match ailments to therapies, and coordinate appointments.
         </p>
       </section>
-    </>
+    </AdminLayout>
   )
 }

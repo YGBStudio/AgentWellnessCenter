@@ -16,6 +16,25 @@ export default function BookingForm({
   const router = useRouter()
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const missingResources = [
+    agents.length === 0 ? 'agents' : null,
+    ailments.length === 0 ? 'ailments' : null,
+    therapies.length === 0 ? 'therapies' : null,
+  ].filter(Boolean)
+
+  if (missingResources.length > 0) {
+    return (
+      <article className="surface-card">
+        <header>
+          <h3>Request an Appointment</h3>
+          <p>Booking will be available after the clinic has demo care data loaded.</p>
+        </header>
+        <p className="empty-state" role="status">
+          Missing {missingResources.join(', ')}. Sign in to the dashboard or restart the app to run the deterministic demo seed.
+        </p>
+      </article>
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

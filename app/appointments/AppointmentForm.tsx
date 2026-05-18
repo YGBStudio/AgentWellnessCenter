@@ -44,9 +44,9 @@ export default function AppointmentForm({
     try {
       await onSubmit(formData)
       setStatus('success')
-    } catch {
+    } catch (error) {
       setStatus('error')
-      setErrorMessage('Network error. Please try again.')
+      setErrorMessage(error instanceof Error ? error.message : 'Network error. Please try again.')
     }
   }
 

@@ -23,17 +23,17 @@ export default function AppointmentList({
   }
 
   return (
-    <div className="table-wrap">
+    <div className="table-wrap table-wrap--management table-wrap--appointments">
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Agent</th>
-            <th>Ailment</th>
-            <th>Therapy</th>
-            <th>Date</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th data-column="id">ID</th>
+            <th data-column="agent">Agent</th>
+            <th data-column="ailment">Ailment</th>
+            <th data-column="therapy">Therapy</th>
+            <th data-column="date">Date</th>
+            <th data-column="status">Status</th>
+            <th data-column="actions">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -43,13 +43,13 @@ export default function AppointmentList({
             const therapy = therapies.find((t) => t.id === appointment.therapy_id)
             return (
               <tr key={appointment.id}>
-                <td>{appointment.id}</td>
-                <td>{agent?.name || `Agent #${appointment.agent_id}`}</td>
-                <td>{ailment?.name || `Ailment #${appointment.ailment_id}`}</td>
-                <td>{therapy?.name || `Therapy #${appointment.therapy_id}`}</td>
-                <td>{appointment.date ? new Date(appointment.date).toLocaleString() : 'N/A'}</td>
-                <td>{appointment.status}</td>
-                <td>
+                <td data-label="ID" data-column="id">{appointment.id}</td>
+                <td data-label="Agent" data-column="agent">{agent?.name || `Agent #${appointment.agent_id}`}</td>
+                <td data-label="Ailment" data-column="ailment">{ailment?.name || `Ailment #${appointment.ailment_id}`}</td>
+                <td data-label="Therapy" data-column="therapy">{therapy?.name || `Therapy #${appointment.therapy_id}`}</td>
+                <td data-label="Date" data-column="date">{appointment.date ? new Date(appointment.date).toLocaleString() : 'N/A'}</td>
+                <td data-label="Status" data-column="status">{appointment.status}</td>
+                <td data-label="Actions" data-column="actions">
                   <div className="table-actions">
                     {onEdit && <button onClick={() => onEdit(appointment)}>Edit</button>}
                     {onDelete && <button onClick={() => onDelete(appointment)}>Delete</button>}

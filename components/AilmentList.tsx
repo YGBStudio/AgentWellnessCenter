@@ -15,27 +15,27 @@ export default function AilmentList({
   }
 
   return (
-    <div className="table-wrap">
+    <div className="table-wrap table-wrap--management table-wrap--ailments">
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Severity</th>
-            <th>Created</th>
-            <th>Actions</th>
+            <th data-column="id">ID</th>
+            <th data-column="name">Name</th>
+            <th data-column="description">Description</th>
+            <th data-column="severity">Severity</th>
+            <th data-column="created">Created</th>
+            <th data-column="actions">Actions</th>
           </tr>
         </thead>
         <tbody>
           {ailments.map((ailment) => (
             <tr key={ailment.id}>
-              <td>{ailment.id}</td>
-              <td>{ailment.name}</td>
-              <td>{ailment.description}</td>
-              <td>{ailment.severity}</td>
-              <td>{ailment.created_at ? new Date(ailment.created_at).toLocaleDateString() : 'N/A'}</td>
-              <td>
+              <td data-label="ID" data-column="id">{ailment.id}</td>
+              <td data-label="Name" data-column="name">{ailment.name}</td>
+              <td data-label="Description" data-column="description">{ailment.description}</td>
+              <td data-label="Severity" data-column="severity">{ailment.severity}</td>
+              <td data-label="Created" data-column="created">{ailment.created_at ? new Date(ailment.created_at).toLocaleDateString() : 'N/A'}</td>
+              <td data-label="Actions" data-column="actions">
                 <div className="table-actions">
                   {onEdit && <button onClick={() => onEdit(ailment)}>Edit</button>}
                   {onDelete && <button onClick={() => onDelete(ailment)}>Delete</button>}

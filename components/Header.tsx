@@ -8,10 +8,6 @@ import { usePathname, useRouter } from 'next/navigation'
 const publicLinks = [
   { href: '/', label: 'Home' },
   { href: '/booking', label: 'Booking' },
-  { href: '/agents', label: 'Agents' },
-  { href: '/appointments', label: 'Appointments' },
-  { href: '/ailments', label: 'Ailments' },
-  { href: '/therapies', label: 'Therapies' },
 ]
 
 const authenticatedLinks = [
@@ -42,9 +38,9 @@ export default function Header() {
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [menuOpen])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setMenuOpen(false)
-    logout()
+    await logout()
     router.push('/')
   }
 

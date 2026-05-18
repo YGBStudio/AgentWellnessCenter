@@ -653,7 +653,7 @@ button,
 /* Data tables */
 .table-wrap {
   width: 100%;
-  overflow-x: auto;
+  overflow: visible;
   border: 1px solid var(--awc-border);
   border-radius: var(--awc-radius);
   background: var(--awc-surface);
@@ -661,8 +661,9 @@ button,
 }
 
 .data-table {
-  min-width: 720px;
+  width: 100%;
   margin: 0;
+  table-layout: fixed;
 }
 
 .data-table th {
@@ -673,7 +674,130 @@ button,
 
 .data-table th,
 .data-table td {
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.35;
   vertical-align: middle;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+  text-wrap: pretty;
+}
+
+.data-table td > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.data-table th:first-child,
+.data-table td:first-child {
+  width: 3.5rem;
+}
+
+.data-table th[data-column="id"],
+.data-table td[data-column="id"] {
+  width: 3.5rem;
+}
+
+.data-table th[data-column="name"],
+.data-table td[data-column="name"] {
+  width: 22%;
+}
+
+.data-table th[data-column="description"],
+.data-table td[data-column="description"] {
+  width: 38%;
+}
+
+.data-table th[data-column="actions"],
+.data-table td[data-column="actions"] {
+  width: 6.5rem;
+}
+
+.data-table th[data-column="duration"],
+.data-table td[data-column="duration"] {
+  width: 5.75rem;
+}
+
+.data-table th[data-column="created"],
+.data-table td[data-column="created"] {
+  width: 6.75rem;
+}
+
+.data-table th[data-column="severity"],
+.data-table td[data-column="severity"],
+.data-table th[data-column="status"],
+.data-table td[data-column="status"] {
+  width: 6.25rem;
+}
+
+.data-table th[data-column="date"],
+.data-table td[data-column="date"] {
+  width: 8.25rem;
+}
+
+.data-table td[data-column="name"],
+.data-table td[data-column="description"] {
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.data-table td[data-column="actions"] {
+  vertical-align: top;
+}
+
+.data-table td[data-column="duration"],
+.data-table td[data-column="created"],
+.data-table td[data-column="severity"],
+.data-table td[data-column="status"],
+.data-table td[data-column="date"] {
+  vertical-align: top;
+  color: var(--awc-muted);
+  font-size: 0.9rem;
+}
+
+.table-wrap--management {
+  margin-inline: -0.35rem;
+  width: calc(100% + 0.7rem);
+}
+
+.table-wrap--management .data-table th,
+.table-wrap--management .data-table td {
+  padding-right: 0.55rem;
+  padding-left: 0.55rem;
+}
+
+.table-wrap--agents .data-table th[data-column="name"],
+.table-wrap--agents .data-table td[data-column="name"] {
+  width: 32%;
+}
+
+.table-wrap--agents .data-table th[data-column="type"],
+.table-wrap--agents .data-table td[data-column="type"] {
+  width: auto;
+}
+
+.table-wrap--ailments .data-table th[data-column="name"],
+.table-wrap--ailments .data-table td[data-column="name"],
+.table-wrap--therapies .data-table th[data-column="name"],
+.table-wrap--therapies .data-table td[data-column="name"] {
+  width: 20%;
+}
+
+.table-wrap--ailments .data-table th[data-column="description"],
+.table-wrap--ailments .data-table td[data-column="description"],
+.table-wrap--therapies .data-table th[data-column="description"],
+.table-wrap--therapies .data-table td[data-column="description"] {
+  width: 42%;
+}
+
+.table-wrap--appointments .data-table th[data-column="agent"],
+.table-wrap--appointments .data-table td[data-column="agent"],
+.table-wrap--appointments .data-table th[data-column="ailment"],
+.table-wrap--appointments .data-table td[data-column="ailment"],
+.table-wrap--appointments .data-table th[data-column="therapy"],
+.table-wrap--appointments .data-table td[data-column="therapy"] {
+  width: 18%;
 }
 
 .data-table tbody tr:last-child td {
@@ -681,14 +805,155 @@ button,
 }
 
 .table-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+  align-items: stretch;
+  justify-content: start;
+  width: min(100%, 5.5rem);
+  min-width: 0;
 }
 
 .table-actions button {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   margin: 0;
   padding: 0.45rem 0.65rem;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .table-wrap {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .table-wrap--management {
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .data-table,
+  .data-table thead,
+  .data-table tbody,
+  .data-table tr,
+  .data-table th,
+  .data-table td {
+    display: block;
+  }
+
+  .data-table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .data-table tbody {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .data-table tr {
+    border: 1px solid var(--awc-border);
+    border-radius: var(--awc-radius);
+    background: var(--awc-surface);
+    box-shadow: var(--awc-shadow-soft);
+  }
+
+  .data-table td {
+    display: grid;
+    grid-template-columns: minmax(7rem, 35%) minmax(0, 1fr);
+    align-items: start;
+    gap: 0.75rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid var(--awc-border);
+  }
+
+  .data-table th:first-child,
+  .data-table td:first-child {
+    width: 100%;
+  }
+
+  .data-table th[data-column="name"],
+  .data-table td[data-column="name"],
+  .data-table th[data-column="description"],
+  .data-table td[data-column="description"],
+  .data-table th[data-column="duration"],
+  .data-table td[data-column="duration"],
+  .data-table th[data-column="created"],
+  .data-table td[data-column="created"],
+  .data-table th[data-column="severity"],
+  .data-table td[data-column="severity"],
+  .data-table th[data-column="status"],
+  .data-table td[data-column="status"],
+  .data-table th[data-column="date"],
+  .data-table td[data-column="date"],
+  .data-table th[data-column="agent"],
+  .data-table td[data-column="agent"],
+  .data-table th[data-column="ailment"],
+  .data-table td[data-column="ailment"],
+  .data-table th[data-column="therapy"],
+  .data-table td[data-column="therapy"],
+  .data-table th[data-column="actions"],
+  .data-table td[data-column="actions"] {
+    width: 100%;
+  }
+
+  .data-table td[data-column="name"],
+  .data-table td[data-column="description"],
+  .data-table td[data-column="duration"],
+  .data-table td[data-column="created"],
+  .data-table td[data-column="severity"],
+  .data-table td[data-column="status"],
+  .data-table td[data-column="date"],
+  .data-table td[data-column="agent"],
+  .data-table td[data-column="ailment"],
+  .data-table td[data-column="therapy"],
+  .data-table td[data-column="actions"] {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.3rem;
+  }
+
+  .data-table td[data-column="actions"] {
+    align-items: stretch;
+  }
+
+  .data-table td[data-column="actions"] .table-actions {
+    width: min(100%, 11rem);
+  }
+
+  .data-table td::before {
+    content: attr(data-label);
+    color: var(--awc-muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .data-table tbody tr:last-child td {
+    border-bottom: 1px solid var(--awc-border);
+  }
+
+  .data-table td:last-child {
+    border-bottom: 0;
+  }
 }
 
 @media (min-width: 768px) {
@@ -818,6 +1083,19 @@ button,
   .cta-group [role="button"],
   .form-actions button,
   .table-actions button {
+    width: 100%;
+  }
+
+  .data-table td {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.3rem;
+  }
+
+  .data-table td[data-column="actions"] .table-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .data-table td[data-column="actions"] .table-actions button {
     width: 100%;
   }
 }

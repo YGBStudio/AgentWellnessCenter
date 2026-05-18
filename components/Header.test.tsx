@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import Header from './Header'
 
@@ -51,7 +51,8 @@ describe('Header NavBar', () => {
     mockState.auth.user = null
     mockState.auth.isAuthenticated = false
     mockState.auth.role = null
-    mockState.auth.logout.mockClear()
+    mockState.auth.logout.mockReset()
+    mockState.auth.logout.mockResolvedValue(undefined)
     mockState.push.mockClear()
     mockState.pathname = '/'
   })
@@ -62,11 +63,11 @@ describe('Header NavBar', () => {
     expect(screen.getByRole('link', { name: /agent wellness center/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page')
     expect(screen.getByRole('link', { name: 'Booking' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Agents' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Appointments' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Ailments' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Therapies' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Login' })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Agents' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Appointments' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Ailments' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Therapies' })).not.toBeInTheDocument()
   })
 
   it('marks descendant routes as active', () => {
@@ -94,7 +95,7 @@ describe('Header NavBar', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('renders authenticated user context and logs out', () => {
+  it('renders authenticated user context and logs out', async () => {
     mockState.pathname = '/dashboard'
     mockState.auth.user = { id: 1, email: 'admin@agentclinic.demo', role: 'admin' }
     mockState.auth.isAuthenticated = true
@@ -109,6 +110,6 @@ describe('Header NavBar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Logout' }))
 
     expect(mockState.auth.logout).toHaveBeenCalledTimes(1)
-    expect(mockState.push).toHaveBeenCalledWith('/')
+    await waitFor(() => expect(mockState.push).toHaveBeenCalledWith('/'))
   })
 })

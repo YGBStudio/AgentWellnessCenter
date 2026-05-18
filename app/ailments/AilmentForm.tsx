@@ -15,10 +15,11 @@ export default function AilmentForm({ ailment, onCancel, onSubmit }: AilmentForm
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const form = e.currentTarget
     setStatus('loading')
     setErrorMessage('')
 
-    const formData = new FormData(e.currentTarget)
+    const formData = new FormData(form)
 
     if (!formData.get('name') || !formData.get('description') || !formData.get('severity')) {
       setStatus('error')
@@ -29,10 +30,10 @@ export default function AilmentForm({ ailment, onCancel, onSubmit }: AilmentForm
     try {
       await onSubmit(formData)
       setStatus('success')
-      e.currentTarget.reset()
-    } catch {
+      form.reset()
+    } catch (error) {
       setStatus('error')
-      setErrorMessage('Network error. Please try again.')
+      setErrorMessage(error instanceof Error ? error.message : 'Network error. Please try again.')
     }
   }
 

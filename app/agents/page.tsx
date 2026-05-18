@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import type { Agent } from '@/lib/db/types'
 import AgentForm from './AgentForm'
 import AgentList from '@/components/AgentList'
+import AdminLayout from '@/components/AdminLayout'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,6 +14,8 @@ export default function AgentsPage() {
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   useEffect(() => {
     fetch('/api/agents')
@@ -21,24 +24,33 @@ export default function AgentsPage() {
         setAgents(data)
         setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch(() => {
+        setErrorMessage('Failed to load agents. Please refresh and try again.')
+        setLoading(false)
+      })
   }, [])
 
-  const handleDelete = (agent: Agent) => {
+  const clearFeedback = () => {
+    setErrorMessage('')
+    setSuccessMessage('')
+  }
+
+  const handleDelete = async (agent: Agent) => {
     if (!confirm(`Are you sure you want to delete agent "${agent.name}"?`)) return
 
+    clearFeedback()
     try {
-      const res = fetch(`/api/agents/${agent.id}`, { method: 'DELETE' })
-      res.then((r) => {
-        if (r.ok) {
-          setAgents((prev) => prev.filter((a) => a.id !== agent.id))
-          setEditingAgent(null)
-        } else {
-          r.json().then((data) => alert(data.error || 'Failed to delete agent'))
-        }
-      })
+      const res = await fetch(`/api/agents/${agent.id}`, { method: 'DELETE' })
+      if (res.ok) {
+        setAgents((prev) => prev.filter((a) => a.id !== agent.id))
+        setEditingAgent(null)
+        setSuccessMessage(`Deleted ${agent.name}.`)
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setErrorMessage(data.error || 'Failed to delete agent.')
+      }
     } catch {
-      alert('Failed to delete agent')
+      setErrorMessage('Network error. Please try again.')
     }
   }
 
@@ -48,6 +60,7 @@ export default function AgentsPage() {
 
   const handleUpdate = async (formData: FormData) => {
     if (!editingAgent) return
+    clearFeedback()
     try {
       const res = await fetch(`/api/agents/${editingAgent.id}`, {
         method: 'PUT',
@@ -62,23 +75,31 @@ export default function AgentsPage() {
         const updated = await res.json()
         setAgents((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
         setEditingAgent(null)
+        setSuccessMessage(`Updated ${updated.name}.`)
         router.refresh()
       } else {
         const data = await res.json()
-        alert(data.error || 'Failed to update agent')
+        const message = data.error || 'Failed to update agent.'
+        setErrorMessage(message)
+        throw new Error(message)
       }
-    } catch {
-      alert('Network error. Please try again.')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Network error. Please try again.'
+      setErrorMessage(message)
+      throw new Error(message)
     }
   }
 
   return (
-    <>
+    <AdminLayout>
       <header className="page-header">
         <h1>Agents</h1>
         <p>Manage AI agents registered at the clinic.</p>
       </header>
       <section className="page-content">
+        {errorMessage && <p className="form-error" role="alert">{errorMessage}</p>}
+        {successMessage && <p className="form-success" role="status">{successMessage}</p>}
+
         <h2>Registered Agents</h2>
         {loading ? (
           <p className="empty-state" role="status">Loading agents...</p>
@@ -100,6 +121,7 @@ export default function AgentsPage() {
         <h2>Register New Agent</h2>
         <AgentForm
           onSubmit={async (formData) => {
+            clearFeedback()
             try {
               const res = await fetch('/api/agents', {
                 method: 'POST',
@@ -113,17 +135,22 @@ export default function AgentsPage() {
               if (res.ok) {
                 const created = await res.json()
                 setAgents((prev) => [created, ...prev])
+                setSuccessMessage(`Registered ${created.name}.`)
                 router.refresh()
               } else {
                 const data = await res.json()
-                alert(data.error || 'Failed to create agent')
+                const message = data.error || 'Failed to create agent.'
+                setErrorMessage(message)
+                throw new Error(message)
               }
-            } catch {
-              alert('Network error. Please try again.')
+            } catch (error) {
+              const message = error instanceof Error ? error.message : 'Network error. Please try again.'
+              setErrorMessage(message)
+              throw new Error(message)
             }
           }}
         />
       </section>
-    </>
+    </AdminLayout>
   )
 }

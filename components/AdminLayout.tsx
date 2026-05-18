@@ -18,7 +18,7 @@ const navigationItems = [
 ]
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const { isAuthenticated, role, logout } = useAuth()
+  const { isAuthenticated, role, loading, logout } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
   const sidebarId = useId()
@@ -41,13 +41,25 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [mobileOpen])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setMobileOpen(false)
-    logout()
+    await logout()
     router.push('/')
   }
 
-  if (!isAuthenticated || role !== 'admin') {
+  if (loading) {
+    return (
+      <div className="admin-layout admin-layout--loading">
+        <div className="admin-content admin-content--full">
+          <div className="admin-content__body">
+            <p className="empty-state" role="status">Loading admin workspace...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated || (role !== 'admin' && role !== 'staff')) {
     return null
   }
 
@@ -96,7 +108,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </button>
           <span>Agent Wellness Center</span>
         </header>
-        <main>{children}</main>
+        <div className="admin-content__body">{children}</div>
       </div>
     </div>
   )
