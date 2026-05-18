@@ -14,7 +14,7 @@ interface AuthContextType {
   role: 'admin' | 'staff' | null
   loading: boolean
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -23,27 +23,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const checkSession = useCallback(async () => {
-    if (typeof window === 'undefined') return
+  const checkSession = useCallback(async (): Promise<AuthUser | null> => {
+    if (typeof window === 'undefined') return null
 
     try {
       const res = await fetch('/api/auth/me')
       if (res.ok) {
         const data = await res.json()
-        setUser(data.user)
-      } else {
-        setUser(null)
+        const nextUser = data.user as AuthUser
+        setUser(nextUser)
+        return nextUser
       }
     } catch {
-      setUser(null)
+      // Fall through to clear local auth state.
     } finally {
       setLoading(false)
     }
+
+    setUser(null)
+    return null
   }, [])
 
   useEffect(() => {
     checkSession()
   }, [checkSession])
+
+  useEffect(() => {
+    if (!user || typeof window === 'undefined') return
+
+    const resetDemoSession = () => {
+      const resetUrl = '/api/demo/reset'
+
+      if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
+        const sent = navigator.sendBeacon(resetUrl)
+        if (sent) return
+      }
+
+      fetch(resetUrl, { method: 'POST', keepalive: true }).catch(() => {})
+    }
+
+    window.addEventListener('pagehide', resetDemoSession)
+    return () => window.removeEventListener('pagehide', resetDemoSession)
+  }, [user])
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
@@ -54,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       if (res.ok) {
-        checkSession()
+        await checkSession()
         return { success: true }
       }
 
@@ -65,10 +86,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const logout = () => {
-    fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
-    setUser(null)
-    removeToken()
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {
+      // Local auth state should still clear if the network request fails.
+    } finally {
+      setUser(null)
+      removeToken()
+    }
   }
 
   const value: AuthContextType = {
