@@ -50,6 +50,6 @@ next-env.d.ts
 *.db-journal
 *.db-wal
 *.db-shm
-# Documentation files not tracked
-README.md
+
+# Local prompt log not tracked
 prompts.md
