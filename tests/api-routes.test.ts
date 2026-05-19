@@ -15,8 +15,8 @@ const mockQueryService = vi.hoisted(() => ({
   getAgentById: vi.fn(),
 }))
 
-vi.mock('@/lib/services/queryService', () => ({
-  QueryService: vi.fn(() => mockQueryService),
+vi.mock('@/lib/services/runtimeQueryService', () => ({
+  getRuntimeQueryService: vi.fn(() => mockQueryService),
 }))
 
 import { POST as postAgent } from '@/app/api/agents/route'

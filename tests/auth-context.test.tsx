@@ -44,7 +44,9 @@ describe('AuthProvider demo reset lifecycle', () => {
     await screen.findByText('signed in')
     window.dispatchEvent(new Event('pagehide'))
 
-    expect(sendBeacon).toHaveBeenCalledWith('/api/demo/reset')
+    await waitFor(() => {
+      expect(sendBeacon).toHaveBeenCalledWith('/api/demo/reset')
+    })
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 

@@ -4,8 +4,8 @@ globalThis.TextEncoder = TextEncoder
 globalThis.TextDecoder = TextDecoder
 
 import Database from 'better-sqlite3'
-import bcrypt from 'bcryptjs'
 import { initializeDatabase } from '@/lib/db/schema'
+import { SqliteDatabaseAdapter } from '@/lib/db/sqlite-adapter'
 import { hashPassword, verifyPassword, signToken, verifyToken as verifyTokenFn } from '@/lib/auth/utils'
 import { serializeCookie } from '@/lib/auth/cookies'
 import { QueryService } from '@/lib/services/queryService'
@@ -97,51 +97,51 @@ describe('QueryService User Methods', () => {
   let db: Database.Database
   let queryService: QueryService
 
-  beforeEach(() => {
+  beforeEach(async () => {
     db = new Database(':memory:')
     db.pragma('foreign_keys = ON')
     initializeDatabase(db)
-    queryService = new QueryService(db)
+    queryService = new QueryService(new SqliteDatabaseAdapter(db))
 
-    const hash = bcrypt.hashSync('admin', 10)
-    queryService.createUser({ email: 'admin@agentclinic.demo', password_hash: hash, role: 'admin' })
+    const hash = await hashPassword('admin')
+    await queryService.createUser({ email: 'admin@agentclinic.demo', password_hash: hash, role: 'admin' })
   })
 
   afterEach(() => {
     db.close()
   })
 
-  it('registers a user with email, password hash, and role', () => {
-    const hash = bcrypt.hashSync('password123', 10)
-    const id = queryService.createUser({ email: 'test@example.com', password_hash: hash, role: 'staff' })
+  it('registers a user with email, password hash, and role', async () => {
+    const hash = await hashPassword('password123')
+    const id = await queryService.createUser({ email: 'test@example.com', password_hash: hash, role: 'staff' })
     expect(typeof id).toBe('number')
     expect(id).toBeGreaterThan(1)
   })
 
-  it('retrieves a user by email', () => {
-    const user = queryService.getUserByEmail('admin@agentclinic.demo')
+  it('retrieves a user by email', async () => {
+    const user = await queryService.getUserByEmail('admin@agentclinic.demo')
     expect(user).toBeDefined()
     expect(user?.email).toBe('admin@agentclinic.demo')
     expect(user?.role).toBe('admin')
   })
 
-  it('returns undefined for non-existent email', () => {
-    const user = queryService.getUserByEmail('nonexistent@example.com')
+  it('returns undefined for non-existent email', async () => {
+    const user = await queryService.getUserByEmail('nonexistent@example.com')
     expect(user).toBeUndefined()
   })
 
-  it('returns correct user count', () => {
-    expect(queryService.getUserCount()).toBe(1)
-    const hash = bcrypt.hashSync('pass', 10)
-    queryService.createUser({ email: 'staff@example.com', password_hash: hash, role: 'staff' })
-    expect(queryService.getUserCount()).toBe(2)
+  it('returns correct user count', async () => {
+    expect(await queryService.getUserCount()).toBe(1)
+    const hash = await hashPassword('pass')
+    await queryService.createUser({ email: 'staff@example.com', password_hash: hash, role: 'staff' })
+    expect(await queryService.getUserCount()).toBe(2)
   })
 
-  it('verifies password via bcrypt', async () => {
-    const user = queryService.getUserByEmail('admin@agentclinic.demo')
+  it('verifies password hash', async () => {
+    const user = await queryService.getUserByEmail('admin@agentclinic.demo')
     expect(user).toBeDefined()
     if (user) {
-      const isValid = await bcrypt.compare('admin', user.password_hash)
+      const isValid = await verifyPassword('admin', user.password_hash)
       expect(isValid).toBe(true)
     }
   })
@@ -253,14 +253,14 @@ describe('Auth Middleware', () => {
 describe('Integration: Auth API Flow', () => {
   let tempDb: Database.Database
 
-  beforeEach(() => {
+  beforeEach(async () => {
     tempDb = new Database(':memory:')
     tempDb.pragma('foreign_keys = ON')
     initializeDatabase(tempDb)
 
-    const hash = bcrypt.hashSync('admin', 10)
-    const qService = new QueryService(tempDb)
-    qService.createUser({ email: 'admin@agentclinic.demo', password_hash: hash, role: 'admin' })
+    const hash = await hashPassword('admin')
+    const qService = new QueryService(new SqliteDatabaseAdapter(tempDb))
+    await qService.createUser({ email: 'admin@agentclinic.demo', password_hash: hash, role: 'admin' })
   })
 
   afterEach(() => {
@@ -268,11 +268,11 @@ describe('Integration: Auth API Flow', () => {
   })
 
   it('login API accepts demo credentials and returns success', async () => {
-    const qService = new QueryService(tempDb)
-    const user = qService.getUserByEmail('admin@agentclinic.demo')
+    const qService = new QueryService(new SqliteDatabaseAdapter(tempDb))
+    const user = await qService.getUserByEmail('admin@agentclinic.demo')
     expect(user).toBeDefined()
 
-    const isValid = await bcrypt.compare('admin', user!.password_hash)
+    const isValid = await verifyPassword('admin', user!.password_hash)
     expect(isValid).toBe(true)
 
     const token = await signToken({ email: user!.email, role: user!.role, userId: user!.id })
@@ -283,17 +283,17 @@ describe('Integration: Auth API Flow', () => {
   })
 
   it('login API rejects invalid credentials', async () => {
-    const qService = new QueryService(tempDb)
-    const user = qService.getUserByEmail('admin@agentclinic.demo')
+    const qService = new QueryService(new SqliteDatabaseAdapter(tempDb))
+    const user = await qService.getUserByEmail('admin@agentclinic.demo')
     expect(user).toBeDefined()
 
-    const isValid = await bcrypt.compare('wrongpassword', user!.password_hash)
+    const isValid = await verifyPassword('wrongpassword', user!.password_hash)
     expect(isValid).toBe(false)
   })
 
-  it('GET /api/agents remains publicly accessible (read-only)', () => {
-    const qService = new QueryService(tempDb)
-    const agents = qService.getAgents()
+  it('GET /api/agents remains publicly accessible (read-only)', async () => {
+    const qService = new QueryService(new SqliteDatabaseAdapter(tempDb))
+    const agents = await qService.getAgents()
     expect(Array.isArray(agents)).toBe(true)
   })
 

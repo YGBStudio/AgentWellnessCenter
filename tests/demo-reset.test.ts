@@ -8,11 +8,11 @@ import { NextRequest } from 'next/server'
 import { signToken } from '@/lib/auth/utils'
 
 const mockDb = vi.hoisted(() => ({ name: 'mock-db' }))
-const mockGetDb = vi.hoisted(() => vi.fn(() => mockDb))
-const mockResetDemoDatabase = vi.hoisted(() => vi.fn())
+const mockGetRuntimeDatabase = vi.hoisted(() => vi.fn(() => mockDb))
+const mockResetDemoDatabase = vi.hoisted(() => vi.fn(() => Promise.resolve()))
 
-vi.mock('@/lib/db/client', () => ({
-  getDb: mockGetDb,
+vi.mock('@/lib/db/d1', () => ({
+  getRuntimeDatabase: mockGetRuntimeDatabase,
 }))
 
 vi.mock('@/lib/db/seed', () => ({
@@ -27,7 +27,7 @@ const originalDemoMode = process.env.DEMO_MODE
 describe('demo mode reset routes', () => {
   beforeEach(() => {
     delete process.env.DEMO_MODE
-    mockGetDb.mockClear()
+    mockGetRuntimeDatabase.mockClear()
     mockResetDemoDatabase.mockClear()
   })
 
@@ -74,7 +74,7 @@ describe('demo mode reset routes', () => {
 
     expect(response.status).toBe(200)
     expect(payload).toEqual({ success: true, reset: true })
-    expect(mockGetDb).toHaveBeenCalledTimes(1)
+    expect(mockGetRuntimeDatabase).toHaveBeenCalledTimes(1)
     expect(mockResetDemoDatabase).toHaveBeenCalledWith(mockDb)
   })
 

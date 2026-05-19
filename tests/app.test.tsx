@@ -3,22 +3,24 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 
-// Mock the QueryService to avoid real DB access during tests
-vi.mock('@/lib/services/queryService', () => ({
-  QueryService: vi.fn().mockImplementation(() => ({
-    getAgentCount: vi.fn().mockReturnValue(3),
-    getAppointmentCount: vi.fn().mockReturnValue(5),
-    getAilmentCount: vi.fn().mockReturnValue(2),
-    getTherapyCount: vi.fn().mockReturnValue(4),
-    getAgents: vi.fn().mockReturnValue([]),
-    getAilments: vi.fn().mockReturnValue([]),
-    getTherapies: vi.fn().mockReturnValue([]),
-    getAppointments: vi.fn().mockReturnValue([]),
-    getAgentById: vi.fn(),
-    getAilmentById: vi.fn(),
-    getTherapyById: vi.fn(),
-    getAppointmentById: vi.fn(),
-  })),
+const mockQueryService = vi.hoisted(() => ({
+  getAgentCount: vi.fn().mockReturnValue(3),
+  getAppointmentCount: vi.fn().mockReturnValue(5),
+  getAilmentCount: vi.fn().mockReturnValue(2),
+  getTherapyCount: vi.fn().mockReturnValue(4),
+  getAgents: vi.fn().mockReturnValue([]),
+  getAilments: vi.fn().mockReturnValue([]),
+  getTherapies: vi.fn().mockReturnValue([]),
+  getAppointments: vi.fn().mockReturnValue([]),
+  getAgentById: vi.fn(),
+  getAilmentById: vi.fn(),
+  getTherapyById: vi.fn(),
+  getAppointmentById: vi.fn(),
+}))
+
+// Mock the runtime QueryService to avoid real DB access during tests
+vi.mock('@/lib/services/runtimeQueryService', () => ({
+  getRuntimeQueryService: vi.fn(() => mockQueryService),
 }))
 
 // Mock auth context for all client components that use useAuth
