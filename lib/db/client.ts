@@ -2,7 +2,6 @@ import Database from 'better-sqlite3'
 import path from 'path'
 import fs from 'fs'
 import { initializeDatabase } from './schema'
-import { seedDefaultAdmin, seedDemoData } from './seed'
 
 const dbPath = path.join(process.cwd(), 'data', 'agentclinic.db')
 
@@ -17,10 +16,6 @@ export function getDb(): Database.Database {
     _db = new Database(dbPath)
     _db.pragma('foreign_keys = ON')
     initializeDatabase(_db)
-    
-    // Seed deterministic demo records without overwriting existing data.
-    seedDefaultAdmin(_db)
-    seedDemoData(_db)
   }
   return _db
 }

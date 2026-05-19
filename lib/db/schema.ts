@@ -1,49 +1,15 @@
-import { Database } from 'better-sqlite3'
+import type { Database } from 'better-sqlite3'
 
-export function initializeDatabase(db: Database) {
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      email TEXT NOT NULL UNIQUE,
-      password_hash TEXT NOT NULL,
-      role TEXT NOT NULL DEFAULT 'staff',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
+export const SCHEMA_STATEMENTS = [
+  'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, role TEXT NOT NULL DEFAULT \'staff\', created_at DATETIME DEFAULT CURRENT_TIMESTAMP);',
+  'CREATE TABLE IF NOT EXISTS agents (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, type TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);',
+  'CREATE TABLE IF NOT EXISTS ailments (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT NOT NULL, severity TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);',
+  'CREATE TABLE IF NOT EXISTS therapies (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT NOT NULL, duration INTEGER NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP);',
+  'CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, agent_id INTEGER NOT NULL, ailment_id INTEGER NOT NULL, therapy_id INTEGER NOT NULL, date DATETIME NOT NULL, status TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (agent_id) REFERENCES agents(id), FOREIGN KEY (ailment_id) REFERENCES ailments(id), FOREIGN KEY (therapy_id) REFERENCES therapies(id));',
+]
 
-    CREATE TABLE IF NOT EXISTS agents (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL UNIQUE,
-      type TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
+export const SCHEMA_SQL = SCHEMA_STATEMENTS.join('\n')
 
-    CREATE TABLE IF NOT EXISTS ailments (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL UNIQUE,
-      description TEXT NOT NULL,
-      severity TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS therapies (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL UNIQUE,
-      description TEXT NOT NULL,
-      duration INTEGER NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS appointments (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      agent_id INTEGER NOT NULL,
-      ailment_id INTEGER NOT NULL,
-      therapy_id INTEGER NOT NULL,
-      date DATETIME NOT NULL,
-      status TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (agent_id) REFERENCES agents(id),
-      FOREIGN KEY (ailment_id) REFERENCES ailments(id),
-      FOREIGN KEY (therapy_id) REFERENCES therapies(id)
-    );
-  `)
+export function initializeDatabase(db: Database): void {
+  db.exec(SCHEMA_SQL)
 }
