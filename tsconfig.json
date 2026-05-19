@@ -25,7 +25,8 @@
     ],
     "types": [
       "react",
-      "react-dom"
+      "react-dom",
+      "@cloudflare/workers-types"
     ],
     "baseUrl": ".",
     "paths": {
@@ -42,6 +43,9 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "tests",
+    "**/*.test.ts",
+    "**/*.test.tsx"
   ]
 }

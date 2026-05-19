@@ -31,8 +31,15 @@ yarn-error.log*
 .env*.local
 .env
 
-# vercel
-.vercel
+# cloudflare
+.open-next/
+.dev.vars
+.wrangler/
+.wrangler-config/
+
+# obsolete generated output from the previous Pages target
+.vercel/
+.vercel-cache/
 
 # typescript
 *.tsbuildinfo
