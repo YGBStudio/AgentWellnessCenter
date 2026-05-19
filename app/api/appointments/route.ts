@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import { createAppointmentSchema, parseId, formatZodError } from '@/lib/validation'
 import { requireRole } from '@/lib/auth/middleware'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,11 +17,11 @@ export async function GET(request: NextRequest) {
       if (agentId === null) {
         return NextResponse.json({ error: 'Invalid agent ID' }, { status: 400 })
       }
-      const appointments = queryService.getAppointmentsByAgentId(agentId)
+      const appointments = await queryService.getAppointmentsByAgentId(agentId)
       return NextResponse.json(appointments)
     }
 
-    const appointments = queryService.getAppointments()
+    const appointments = await queryService.getAppointments()
     return NextResponse.json(appointments)
   } catch {
     return NextResponse.json({ error: 'Failed to fetch appointments' }, { status: 500 })
@@ -38,8 +40,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const id = queryService.createAppointment(result.data)
-    const created = queryService.getAppointmentById(id)
+    const id = await queryService.createAppointment(result.data)
+    const created = await queryService.getAppointmentById(id)
     return NextResponse.json(created, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Failed to create appointment' }, { status: 500 })

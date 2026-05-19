@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import { createAppointmentSchema, formatZodError } from '@/lib/validation'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     
     // Default status to 'scheduled' for public bookings
     const dataToValidate = {
@@ -23,15 +25,15 @@ export async function POST(request: NextRequest) {
     const { agent_id, date } = result.data
 
     // Check for conflicts
-    if (queryService.checkAppointmentConflict(agent_id, date)) {
+    if (await queryService.checkAppointmentConflict(agent_id, date)) {
       return NextResponse.json(
         { error: 'This time slot is already booked for the selected agent.' },
         { status: 409 }
       )
     }
 
-    const id = queryService.createAppointment(result.data)
-    const created = queryService.getAppointmentById(id)
+    const id = await queryService.createAppointment(result.data)
+    const created = await queryService.getAppointmentById(id)
     
     return NextResponse.json(created, { status: 201 })
   } catch (error) {

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth/middleware'
 import { isDemoModeEnabled } from '@/lib/config/demoMode'
-import { getDb } from '@/lib/db/client'
+import { getRuntimeDatabase } from '@/lib/db/d1'
 import { resetDemoDatabase } from '@/lib/db/seed'
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   const user = await getAuthUser(request)
@@ -20,7 +22,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    resetDemoDatabase(getDb())
+    await resetDemoDatabase(getRuntimeDatabase())
     return NextResponse.json({ success: true, reset: true })
   } catch (error) {
     console.error('Demo reset failed:', error)

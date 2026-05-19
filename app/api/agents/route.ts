@@ -1,15 +1,18 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import { createAgentSchema, formatZodError } from '@/lib/validation'
 import { requireRole } from '@/lib/auth/middleware'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const agents = queryService.getAgents()
+    const agents = await queryService.getAgents()
     return NextResponse.json(agents)
-  } catch {
+  } catch (error) {
+    console.error('Failed to fetch agents', error)
     return NextResponse.json({ error: 'Failed to fetch agents' }, { status: 500 })
   }
 }
@@ -26,8 +29,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const id = queryService.createAgent(result.data)
-    const created = queryService.getAgentById(id)
+    const id = await queryService.createAgent(result.data)
+    const created = await queryService.getAgentById(id)
     return NextResponse.json(created, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Failed to create agent' }, { status: 500 })

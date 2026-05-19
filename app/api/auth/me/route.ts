@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/auth/utils'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: Request) {
   const cookieHeader = request.headers.get('cookie')
@@ -21,7 +23,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Invalid session' }, { status: 401 })
   }
 
-  const user = queryService.getUserByEmail(decoded.email)
+  const user = await queryService.getUserByEmail(decoded.email)
 
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 401 })

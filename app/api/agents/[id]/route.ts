@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import { updateAgentSchema, parseId, formatZodError } from '@/lib/validation'
 import { requireRole } from '@/lib/auth/middleware'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Invalid agent ID' }, { status: 400 })
     }
 
-    const agent = queryService.getAgentById(agentId)
+    const agent = await queryService.getAgentById(agentId)
 
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })
@@ -45,13 +47,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const success = queryService.updateAgent(agentId, result.data)
+    const success = await queryService.updateAgent(agentId, result.data)
 
     if (!success) {
       return NextResponse.json({ error: 'Agent not found or no changes' }, { status: 404 })
     }
 
-    const updated = queryService.getAgentById(agentId)
+    const updated = await queryService.getAgentById(agentId)
     return NextResponse.json(updated)
   } catch {
     return NextResponse.json({ error: 'Failed to update agent' }, { status: 500 })
@@ -70,11 +72,11 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: 'Invalid agent ID' }, { status: 400 })
     }
 
-    if (queryService.hasAgentAppointments(agentId)) {
+    if (await queryService.hasAgentAppointments(agentId)) {
       return NextResponse.json({ error: 'Cannot delete agent with existing appointments' }, { status: 409 })
     }
 
-    const success = queryService.deleteAgent(agentId)
+    const success = await queryService.deleteAgent(agentId)
 
     if (!success) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 })

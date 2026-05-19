@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import { updateAppointmentSchema, parseId, formatZodError } from '@/lib/validation'
 import { requireRole } from '@/lib/auth/middleware'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Invalid appointment ID' }, { status: 400 })
     }
 
-    const appointment = queryService.getAppointmentById(appointmentId)
+    const appointment = await queryService.getAppointmentById(appointmentId)
 
     if (!appointment) {
       return NextResponse.json({ error: 'Appointment not found' }, { status: 404 })
@@ -45,13 +47,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const success = queryService.updateAppointment(appointmentId, result.data)
+    const success = await queryService.updateAppointment(appointmentId, result.data)
 
     if (!success) {
       return NextResponse.json({ error: 'Appointment not found or no changes' }, { status: 404 })
     }
 
-    const updated = queryService.getAppointmentById(appointmentId)
+    const updated = await queryService.getAppointmentById(appointmentId)
     return NextResponse.json(updated)
   } catch {
     return NextResponse.json({ error: 'Failed to update appointment' }, { status: 500 })
@@ -70,7 +72,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: 'Invalid appointment ID' }, { status: 400 })
     }
 
-    const success = queryService.deleteAppointment(appointmentId)
+    const success = await queryService.deleteAppointment(appointmentId)
 
     if (!success) {
       return NextResponse.json({ error: 'Appointment not found' }, { status: 404 })

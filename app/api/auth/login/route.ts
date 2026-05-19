@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import { verifyPassword, signToken } from '@/lib/auth/utils'
 import { Role } from '@/lib/auth/types'
 import { serializeCookie } from '@/lib/auth/cookies'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 })
     }
 
-    const user = queryService.getUserByEmail(email)
+    const user = await queryService.getUserByEmail(email)
 
     if (!user) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 })

@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import { updateAilmentSchema, parseId, formatZodError } from '@/lib/validation'
 import { requireRole } from '@/lib/auth/middleware'
 
-const queryService = new QueryService()
+const queryService = getRuntimeQueryService()
+
+export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'Invalid ailment ID' }, { status: 400 })
     }
 
-    const ailment = queryService.getAilmentById(ailmentId)
+    const ailment = await queryService.getAilmentById(ailmentId)
 
     if (!ailment) {
       return NextResponse.json({ error: 'Ailment not found' }, { status: 404 })
@@ -45,13 +47,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: formatZodError(result.error) }, { status: 400 })
     }
 
-    const success = queryService.updateAilment(ailmentId, result.data)
+    const success = await queryService.updateAilment(ailmentId, result.data)
 
     if (!success) {
       return NextResponse.json({ error: 'Ailment not found or no changes' }, { status: 404 })
     }
 
-    const updated = queryService.getAilmentById(ailmentId)
+    const updated = await queryService.getAilmentById(ailmentId)
     return NextResponse.json(updated)
   } catch {
     return NextResponse.json({ error: 'Failed to update ailment' }, { status: 500 })
@@ -70,11 +72,11 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: 'Invalid ailment ID' }, { status: 400 })
     }
 
-    if (queryService.hasAilmentAppointments(ailmentId)) {
+    if (await queryService.hasAilmentAppointments(ailmentId)) {
       return NextResponse.json({ error: 'Cannot delete ailment with existing appointments' }, { status: 409 })
     }
 
-    const success = queryService.deleteAilment(ailmentId)
+    const success = await queryService.deleteAilment(ailmentId)
 
     if (!success) {
       return NextResponse.json({ error: 'Ailment not found' }, { status: 404 })

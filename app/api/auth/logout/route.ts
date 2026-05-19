@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth/middleware'
 import { isDemoModeEnabled } from '@/lib/config/demoMode'
-import { getDb } from '@/lib/db/client'
+import { getRuntimeDatabase } from '@/lib/db/d1'
 import { resetDemoDatabase } from '@/lib/db/seed'
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   if (isDemoModeEnabled()) {
     try {
       const user = await getAuthUser(request)
       if (user && (user.role === 'admin' || user.role === 'staff')) {
-        resetDemoDatabase(getDb())
+        await resetDemoDatabase(getRuntimeDatabase())
       }
     } catch (error) {
       console.error('Demo reset during logout failed:', error)
