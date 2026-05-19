@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const res = await fetch('/api/auth/me')
       if (res.ok) {
-        const data = await res.json()
+        const data = (await res.json()) as { user: AuthUser }
         const nextUser = data.user as AuthUser
         setUser(nextUser)
         return nextUser
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { success: true }
       }
 
-      const data = await res.json()
+      const data = (await res.json()) as { error?: string }
       return { success: false, error: data.error || 'Invalid credentials' }
     } catch {
       return { success: false, error: 'Network error. Please try again.' }

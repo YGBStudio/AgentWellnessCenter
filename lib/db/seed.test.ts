@@ -1,24 +1,27 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import Database from 'better-sqlite3'
-import bcrypt from 'bcryptjs'
 import { initializeDatabase } from './schema'
+import { SqliteDatabaseAdapter } from './sqlite-adapter'
 import { resetDemoDatabase, seedDefaultAdmin, seedDemoData } from './seed'
+import { verifyPassword } from '../auth/utils'
 
 describe('demo seed data', () => {
   let db: Database.Database
+  let adapter: SqliteDatabaseAdapter
 
   beforeEach(() => {
     db = new Database(':memory:')
     db.pragma('foreign_keys = ON')
     initializeDatabase(db)
+    adapter = new SqliteDatabaseAdapter(db)
   })
 
   afterEach(() => {
     db.close()
   })
 
-  it('keeps the default demo admin credentials available', () => {
-    seedDefaultAdmin(db)
+  it('keeps the default demo admin credentials available', async () => {
+    await seedDefaultAdmin(adapter)
 
     const user = db
       .prepare('SELECT email, password_hash, role FROM users WHERE email = ?')
@@ -28,11 +31,11 @@ describe('demo seed data', () => {
 
     expect(user).toBeDefined()
     expect(user?.role).toBe('admin')
-    expect(bcrypt.compareSync('admin', user?.password_hash ?? '')).toBe(true)
+    expect(await verifyPassword('admin', user?.password_hash ?? '')).toBe(true)
   })
 
-  it('creates deterministic agents, ailments, therapies, and appointments', () => {
-    seedDemoData(db)
+  it('creates deterministic agents, ailments, therapies, and appointments', async () => {
+    await seedDemoData(adapter)
 
     expect(countRows('agents')).toBeGreaterThanOrEqual(4)
     expect(countRows('ailments')).toBeGreaterThanOrEqual(4)
@@ -44,10 +47,10 @@ describe('demo seed data', () => {
     expect(findByName('therapies', 'Context Compression Therapy')).toBeDefined()
   })
 
-  it('is idempotent and preserves user-created records', () => {
+  it('is idempotent and preserves user-created records', async () => {
     db.prepare('INSERT INTO agents (name, type) VALUES (?, ?)').run('Local Custom Agent', 'demo')
 
-    seedDemoData(db)
+    await seedDemoData(adapter)
     const countsAfterFirstSeed = {
       agents: countRows('agents'),
       ailments: countRows('ailments'),
@@ -55,7 +58,7 @@ describe('demo seed data', () => {
       appointments: countRows('appointments'),
     }
 
-    seedDemoData(db)
+    await seedDemoData(adapter)
 
     expect(countRows('agents')).toBe(countsAfterFirstSeed.agents)
     expect(countRows('ailments')).toBe(countsAfterFirstSeed.ailments)
@@ -64,12 +67,12 @@ describe('demo seed data', () => {
     expect(findByName('agents', 'Local Custom Agent')).toBeDefined()
   })
 
-  it('resets demo-session clutter and restores deterministic seed data', () => {
-    seedDefaultAdmin(db)
-    seedDemoData(db)
+  it('resets demo-session clutter and restores deterministic seed data', async () => {
+    await seedDefaultAdmin(adapter)
+    await seedDemoData(adapter)
     db.prepare('INSERT INTO agents (name, type) VALUES (?, ?)').run('Local Custom Agent', 'demo')
 
-    resetDemoDatabase(db)
+    await resetDemoDatabase(adapter)
 
     expect(countRows('agents')).toBe(4)
     expect(countRows('ailments')).toBe(4)
@@ -85,7 +88,7 @@ describe('demo seed data', () => {
 
     expect(user).toBeDefined()
     expect(user?.role).toBe('admin')
-    expect(bcrypt.compareSync('admin', user?.password_hash ?? '')).toBe(true)
+    expect(await verifyPassword('admin', user?.password_hash ?? '')).toBe(true)
   })
 
   function countRows(table: 'users' | 'agents' | 'ailments' | 'therapies' | 'appointments'): number {

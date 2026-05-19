@@ -1,5 +1,5 @@
-import bcrypt from 'bcryptjs'
-import { Database } from 'better-sqlite3'
+import { hashPassword } from '../auth/utils'
+import type { AppDatabase } from './adapter'
 import type { AgentInsert, AilmentInsert, AppointmentInsert, TherapyInsert } from './types'
 
 const DEMO_ADMIN_EMAIL = 'admin@agentclinic.demo'
@@ -89,47 +89,43 @@ const demoAppointments = [
   status: AppointmentInsert['status']
 }>
 
-// Seed default admin user on first run
-export function seedDefaultAdmin(db: Database): void {
-  // Check if admin already exists
-  const existing = db.prepare('SELECT * FROM users WHERE email = ?').get(DEMO_ADMIN_EMAIL)
+export async function seedDefaultAdmin(db: AppDatabase): Promise<void> {
+  const existing = await db.first('SELECT * FROM users WHERE email = ?', [DEMO_ADMIN_EMAIL])
   if (existing) {
-    console.log('ℹ️  Default admin user already exists, skipping seed.')
     return
   }
 
-  const hash = bcrypt.hashSync(DEMO_ADMIN_PASSWORD, 10)
-  db.prepare('INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)').run(
+  const hash = await hashPassword(DEMO_ADMIN_PASSWORD)
+  await db.run('INSERT INTO users (email, password_hash, role) VALUES (?, ?, ?)', [
     DEMO_ADMIN_EMAIL,
     hash,
-    DEMO_ADMIN_ROLE
-  )
-  console.log('✅ Default admin user seeded (this is a development-only convenience).')
+    DEMO_ADMIN_ROLE,
+  ])
 }
 
-export function seedDemoData(db: Database): void {
+export async function seedDemoData(db: AppDatabase): Promise<void> {
   for (const agent of demoAgents) {
-    insertAgentIfMissing(db, agent)
+    await insertAgentIfMissing(db, agent)
   }
 
   for (const ailment of demoAilments) {
-    insertAilmentIfMissing(db, ailment)
+    await insertAilmentIfMissing(db, ailment)
   }
 
   for (const therapy of demoTherapies) {
-    insertTherapyIfMissing(db, therapy)
+    await insertTherapyIfMissing(db, therapy)
   }
 
   for (const appointment of demoAppointments) {
-    const agentId = getIdByName(db, 'agents', appointment.agentName)
-    const ailmentId = getIdByName(db, 'ailments', appointment.ailmentName)
-    const therapyId = getIdByName(db, 'therapies', appointment.therapyName)
+    const agentId = await getIdByName(db, 'agents', appointment.agentName)
+    const ailmentId = await getIdByName(db, 'ailments', appointment.ailmentName)
+    const therapyId = await getIdByName(db, 'therapies', appointment.therapyName)
 
     if (!agentId || !ailmentId || !therapyId) {
       continue
     }
 
-    insertAppointmentIfMissing(db, {
+    await insertAppointmentIfMissing(db, {
       agent_id: agentId,
       ailment_id: ailmentId,
       therapy_id: therapyId,
@@ -139,78 +135,71 @@ export function seedDemoData(db: Database): void {
   }
 }
 
-export function resetDemoDatabase(db: Database): void {
-  const reset = db.transaction(() => {
-    db.prepare('DELETE FROM appointments').run()
-    db.prepare('DELETE FROM agents').run()
-    db.prepare('DELETE FROM ailments').run()
-    db.prepare('DELETE FROM therapies').run()
-    db.prepare('DELETE FROM users WHERE email = ?').run(DEMO_ADMIN_EMAIL)
-    db
-      .prepare(
-        "DELETE FROM sqlite_sequence WHERE name IN ('users', 'agents', 'ailments', 'therapies', 'appointments')"
-      )
-      .run()
+export async function resetDemoDatabase(db: AppDatabase): Promise<void> {
+  await db.run('DELETE FROM appointments')
+  await db.run('DELETE FROM agents')
+  await db.run('DELETE FROM ailments')
+  await db.run('DELETE FROM therapies')
+  await db.run('DELETE FROM users WHERE email = ?', [DEMO_ADMIN_EMAIL])
+  await db.run(
+    "DELETE FROM sqlite_sequence WHERE name IN ('users', 'agents', 'ailments', 'therapies', 'appointments')"
+  )
 
-    seedDefaultAdmin(db)
-    seedDemoData(db)
-  })
-
-  reset()
+  await seedDefaultAdmin(db)
+  await seedDemoData(db)
 }
 
-function insertAgentIfMissing(db: Database, agent: AgentInsert): void {
-  const existing = db.prepare('SELECT id FROM agents WHERE name = ?').get(agent.name)
+async function insertAgentIfMissing(db: AppDatabase, agent: AgentInsert): Promise<void> {
+  const existing = await db.first('SELECT id FROM agents WHERE name = ?', [agent.name])
   if (existing) return
 
-  db.prepare('INSERT INTO agents (name, type) VALUES (?, ?)').run(agent.name, agent.type)
+  await db.run('INSERT INTO agents (name, type) VALUES (?, ?)', [agent.name, agent.type])
 }
 
-function insertAilmentIfMissing(db: Database, ailment: AilmentInsert): void {
-  const existing = db.prepare('SELECT id FROM ailments WHERE name = ?').get(ailment.name)
+async function insertAilmentIfMissing(db: AppDatabase, ailment: AilmentInsert): Promise<void> {
+  const existing = await db.first('SELECT id FROM ailments WHERE name = ?', [ailment.name])
   if (existing) return
 
-  db.prepare('INSERT INTO ailments (name, description, severity) VALUES (?, ?, ?)').run(
+  await db.run('INSERT INTO ailments (name, description, severity) VALUES (?, ?, ?)', [
     ailment.name,
     ailment.description,
-    ailment.severity
-  )
+    ailment.severity,
+  ])
 }
 
-function insertTherapyIfMissing(db: Database, therapy: TherapyInsert): void {
-  const existing = db.prepare('SELECT id FROM therapies WHERE name = ?').get(therapy.name)
+async function insertTherapyIfMissing(db: AppDatabase, therapy: TherapyInsert): Promise<void> {
+  const existing = await db.first('SELECT id FROM therapies WHERE name = ?', [therapy.name])
   if (existing) return
 
-  db.prepare('INSERT INTO therapies (name, description, duration) VALUES (?, ?, ?)').run(
+  await db.run('INSERT INTO therapies (name, description, duration) VALUES (?, ?, ?)', [
     therapy.name,
     therapy.description,
-    therapy.duration
-  )
+    therapy.duration,
+  ])
 }
 
-function insertAppointmentIfMissing(db: Database, appointment: AppointmentInsert): void {
-  const existing = db
-    .prepare('SELECT id FROM appointments WHERE agent_id = ? AND date = ?')
-    .get(appointment.agent_id, appointment.date)
+async function insertAppointmentIfMissing(db: AppDatabase, appointment: AppointmentInsert): Promise<void> {
+  const existing = await db.first('SELECT id FROM appointments WHERE agent_id = ? AND date = ?', [
+    appointment.agent_id,
+    appointment.date,
+  ])
 
   if (existing) return
 
-  db.prepare(
-    'INSERT INTO appointments (agent_id, ailment_id, therapy_id, date, status) VALUES (?, ?, ?, ?, ?)'
-  ).run(
+  await db.run('INSERT INTO appointments (agent_id, ailment_id, therapy_id, date, status) VALUES (?, ?, ?, ?, ?)', [
     appointment.agent_id,
     appointment.ailment_id,
     appointment.therapy_id,
     appointment.date,
-    appointment.status
-  )
+    appointment.status,
+  ])
 }
 
-function getIdByName(
-  db: Database,
+async function getIdByName(
+  db: AppDatabase,
   table: 'agents' | 'ailments' | 'therapies',
   name: string
-): number | null {
-  const row = db.prepare(`SELECT id FROM ${table} WHERE name = ?`).get(name) as { id: number } | undefined
+): Promise<number | null> {
+  const row = await db.first<{ id: number }>(`SELECT id FROM ${table} WHERE name = ?`, [name])
   return row?.id ?? null
 }
