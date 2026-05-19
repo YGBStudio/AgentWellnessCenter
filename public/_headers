@@ -1,0 +1,26 @@
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/_next/image*
+  Cache-Control: public, max-age=86400
+
+/api/*
+  Cache-Control: no-store
+
+/dashboard*
+  Cache-Control: no-store
+
+/agents*
+  Cache-Control: no-store
+
+/ailments*
+  Cache-Control: no-store
+
+/therapies*
+  Cache-Control: no-store
+
+/appointments*
+  Cache-Control: no-store
+
+/login*
+  Cache-Control: no-store

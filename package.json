@@ -9,26 +9,32 @@
     "lint": "eslint .",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "workers:build": "opennextjs-cloudflare build",
+    "workers:preview": "npm run workers:build && opennextjs-cloudflare preview",
+    "workers:deploy": "npm run workers:build && opennextjs-cloudflare deploy --env production",
+    "d1:migrate:local": "wrangler d1 migrations apply DB --local",
+    "d1:migrate:preview": "wrangler d1 migrations apply DB --remote --env preview",
+    "d1:migrate:production": "wrangler d1 migrations apply DB --remote --env production",
+    "cf:typegen": "XDG_CONFIG_HOME=.wrangler-config wrangler types --env-interface CloudflareEnv --include-runtime false cloudflare-env.d.ts"
   },
   "dependencies": {
     "@picocss/pico": "^2.1.1",
-    "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.9.0",
     "jose": "^6.2.3",
-    "jsonwebtoken": "^9.0.3",
     "next": "^15.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "server-only": "^0.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260518.1",
+    "@opennextjs/cloudflare": "^1.19.10",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
@@ -36,7 +42,8 @@
     "eslint-config-next": "^15.5.15",
     "jsdom": "^29.1.1",
     "typescript": "^5.5.3",
-    "vitest": "^3.0.0"
+    "vitest": "^3.0.0",
+    "wrangler": "^4.92.0"
   },
   "private": true
 }

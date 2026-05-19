@@ -1,0 +1,41 @@
+name = "agent-wellness-center"
+main = ".open-next/worker.js"
+compatibility_date = "2026-05-18"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[vars]
+DEMO_MODE = "true"
+DATABASE_DRIVER = "d1"
+REQUIRE_JWT_SECRET = "false"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "agentclinic-local"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[env.preview.vars]
+DEMO_MODE = "true"
+DATABASE_DRIVER = "d1"
+REQUIRE_JWT_SECRET = "true"
+
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "agentclinic-preview"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[env.production.vars]
+DEMO_MODE = "false"
+DATABASE_DRIVER = "d1"
+REQUIRE_JWT_SECRET = "true"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "agentclinic-production"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
