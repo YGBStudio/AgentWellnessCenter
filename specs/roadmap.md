@@ -58,3 +58,14 @@ High-level implementation order in small phases:
      - Add opt-in demo mode cleanup that resets and reseeds the database after demo sessions.
      - Document demo credentials, setup, validation, and teaching walkthroughs.
      - **Status:** Complete. See `specs/2026-05-17-mvp-demo-readiness/`.
+
+7. **Phase 7: Deployment Target Preparation**
+     - Configure the project for Cloudflare Workers using the OpenNext Cloudflare adapter.
+     - Add or update OpenNext build, preview, and deployment configuration.
+     - Ensure environment variables and secrets are handled through deploy-time configuration.
+     - Resolve runtime compatibility gaps for server routes, middleware, static assets, and database access.
+     - Configure Workers assets, D1 bindings, `nodejs_compat`, and the OpenNext worker output.
+     - Verify production builds succeed in a clean environment.
+     - Configure routing, static assets, and caching for preview and production deployments.
+     - Ensure preview and production deployments work correctly without manual fixes.
+     - **Status:** Implemented for the Workers/OpenNext target as active build/deploy configuration. See `specs/2026-05-17-deployment-target-preparation/`.
