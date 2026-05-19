@@ -1,8 +1,7 @@
 import React from 'react'
 import AdminLayout from '@/components/AdminLayout'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 
-export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
@@ -14,11 +13,17 @@ export default async function DashboardPage() {
   // We can still show counts even without auth for the component to render,
   // but the page itself is protected by middleware.
   try {
-    const queryService = new QueryService()
-    agentCount = queryService.getAgentCount()
-    appointmentCount = queryService.getAppointmentCount()
-    ailmentCount = queryService.getAilmentCount()
-    therapyCount = queryService.getTherapyCount()
+    const queryService = getRuntimeQueryService()
+    const counts = await Promise.all([
+      queryService.getAgentCount(),
+      queryService.getAppointmentCount(),
+      queryService.getAilmentCount(),
+      queryService.getTherapyCount(),
+    ])
+    agentCount = counts[0]
+    appointmentCount = counts[1]
+    ailmentCount = counts[2]
+    therapyCount = counts[3]
   } catch (error) {
     console.error('Unable to load dashboard data', error)
   }

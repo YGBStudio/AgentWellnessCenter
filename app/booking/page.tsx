@@ -1,16 +1,17 @@
 import React from 'react'
-import { QueryService } from '@/lib/services/queryService'
+import { getRuntimeQueryService } from '@/lib/services/runtimeQueryService'
 import BookingForm from './BookingForm'
 import PromoSection from '@/components/PromoCard'
 
-export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export default async function BookingPage() {
-  const queryService = new QueryService()
-  const agents = queryService.getAgents()
-  const ailments = queryService.getAilments()
-  const therapies = queryService.getTherapies()
+  const queryService = getRuntimeQueryService()
+  const [agents, ailments, therapies] = await Promise.all([
+    queryService.getAgents(),
+    queryService.getAilments(),
+    queryService.getTherapies(),
+  ])
 
   return (
     <>

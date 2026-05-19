@@ -21,7 +21,7 @@ export default function AgentsPage() {
     fetch('/api/agents')
       .then((res) => res.json())
       .then((data) => {
-        setAgents(data)
+        setAgents(data as Agent[])
         setLoading(false)
       })
       .catch(() => {
@@ -46,7 +46,7 @@ export default function AgentsPage() {
         setEditingAgent(null)
         setSuccessMessage(`Deleted ${agent.name}.`)
       } else {
-        const data = await res.json().catch(() => ({}))
+        const data = (await res.json().catch(() => ({}))) as { error?: string }
         setErrorMessage(data.error || 'Failed to delete agent.')
       }
     } catch {
@@ -72,13 +72,13 @@ export default function AgentsPage() {
       })
 
       if (res.ok) {
-        const updated = await res.json()
+        const updated = (await res.json()) as Agent
         setAgents((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
         setEditingAgent(null)
         setSuccessMessage(`Updated ${updated.name}.`)
         router.refresh()
       } else {
-        const data = await res.json()
+        const data = (await res.json()) as { error?: string }
         const message = data.error || 'Failed to update agent.'
         setErrorMessage(message)
         throw new Error(message)
@@ -133,12 +133,12 @@ export default function AgentsPage() {
               })
 
               if (res.ok) {
-                const created = await res.json()
+                const created = (await res.json()) as Agent
                 setAgents((prev) => [created, ...prev])
                 setSuccessMessage(`Registered ${created.name}.`)
                 router.refresh()
               } else {
-                const data = await res.json()
+                const data = (await res.json()) as { error?: string }
                 const message = data.error || 'Failed to create agent.'
                 setErrorMessage(message)
                 throw new Error(message)

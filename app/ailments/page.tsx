@@ -21,7 +21,7 @@ export default function AilmentsPage() {
     fetch('/api/ailments')
       .then((res) => res.json())
       .then((data) => {
-        setAilments(data)
+        setAilments(data as Ailment[])
         setLoading(false)
       })
       .catch(() => {
@@ -47,7 +47,7 @@ export default function AilmentsPage() {
           setSuccessMessage(`Deleted ${ailment.name}.`)
         } else {
           r.json()
-            .then((data) => setErrorMessage(data.error || 'Failed to delete ailment.'))
+            .then((data) => setErrorMessage((data as { error?: string }).error || 'Failed to delete ailment.'))
             .catch(() => setErrorMessage('Failed to delete ailment.'))
         }
       })
@@ -73,13 +73,13 @@ export default function AilmentsPage() {
       })
 
       if (res.ok) {
-        const updated = await res.json()
+        const updated = (await res.json()) as Ailment
         setAilments((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
         setEditingAilment(null)
         setSuccessMessage(`Updated ${updated.name}.`)
         router.refresh()
       } else {
-        const data = await res.json()
+        const data = (await res.json()) as { error?: string }
         const message = data.error || 'Failed to update ailment.'
         setErrorMessage(message)
         throw new Error(message)
@@ -135,12 +135,12 @@ export default function AilmentsPage() {
               })
 
               if (res.ok) {
-                const created = await res.json()
+                const created = (await res.json()) as Ailment
                 setAilments((prev) => [created, ...prev])
                 setSuccessMessage(`Added ${created.name}.`)
                 router.refresh()
               } else {
-                const data = await res.json()
+                const data = (await res.json()) as { error?: string }
                 const message = data.error || 'Failed to create ailment.'
                 setErrorMessage(message)
                 throw new Error(message)

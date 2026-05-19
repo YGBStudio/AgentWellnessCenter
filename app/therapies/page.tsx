@@ -21,7 +21,7 @@ export default function TherapiesPage() {
     fetch('/api/therapies')
       .then((res) => res.json())
       .then((data) => {
-        setTherapies(data)
+        setTherapies(data as Therapy[])
         setLoading(false)
       })
       .catch(() => {
@@ -47,7 +47,7 @@ export default function TherapiesPage() {
           setSuccessMessage(`Deleted ${therapy.name}.`)
         } else {
           r.json()
-            .then((data) => setErrorMessage(data.error || 'Failed to delete therapy.'))
+            .then((data) => setErrorMessage((data as { error?: string }).error || 'Failed to delete therapy.'))
             .catch(() => setErrorMessage('Failed to delete therapy.'))
         }
       })
@@ -73,13 +73,13 @@ export default function TherapiesPage() {
       })
 
       if (res.ok) {
-        const updated = await res.json()
+        const updated = (await res.json()) as Therapy
         setTherapies((prev) => prev.map((t) => (t.id === updated.id ? updated : t)))
         setEditingTherapy(null)
         setSuccessMessage(`Updated ${updated.name}.`)
         router.refresh()
       } else {
-        const data = await res.json()
+        const data = (await res.json()) as { error?: string }
         const message = data.error || 'Failed to update therapy.'
         setErrorMessage(message)
         throw new Error(message)
@@ -135,12 +135,12 @@ export default function TherapiesPage() {
               })
 
               if (res.ok) {
-                const created = await res.json()
+                const created = (await res.json()) as Therapy
                 setTherapies((prev) => [created, ...prev])
                 setSuccessMessage(`Added ${created.name}.`)
                 router.refresh()
               } else {
-                const data = await res.json()
+                const data = (await res.json()) as { error?: string }
                 const message = data.error || 'Failed to create therapy.'
                 setErrorMessage(message)
                 throw new Error(message)

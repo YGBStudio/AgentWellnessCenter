@@ -27,10 +27,10 @@ export default function AppointmentsPage() {
       fetch('/api/ailments').then((res) => res.json()),
       fetch('/api/therapies').then((res) => res.json()),
     ]).then(([appointmentsData, agentsData, ailmentsData, therapiesData]) => {
-      setAppointments(appointmentsData)
-      setAgents(agentsData)
-      setAilments(ailmentsData)
-      setTherapies(therapiesData)
+      setAppointments(appointmentsData as Appointment[])
+      setAgents(agentsData as Agent[])
+      setAilments(ailmentsData as Ailment[])
+      setTherapies(therapiesData as Therapy[])
       setLoading(false)
     }).catch(() => {
       setErrorMessage('Failed to load appointment data. Please refresh and try again.')
@@ -55,7 +55,7 @@ export default function AppointmentsPage() {
           setSuccessMessage('Deleted appointment.')
         } else {
           r.json()
-            .then((data) => setErrorMessage(data.error || 'Failed to delete appointment.'))
+            .then((data) => setErrorMessage((data as { error?: string }).error || 'Failed to delete appointment.'))
             .catch(() => setErrorMessage('Failed to delete appointment.'))
         }
       })
@@ -83,13 +83,13 @@ export default function AppointmentsPage() {
       })
 
       if (res.ok) {
-        const updated = await res.json()
+        const updated = (await res.json()) as Appointment
         setAppointments((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
         setEditingAppointment(null)
         setSuccessMessage('Updated appointment.')
         router.refresh()
       } else {
-        const data = await res.json()
+        const data = (await res.json()) as { error?: string }
         const message = data.error || 'Failed to update appointment.'
         setErrorMessage(message)
         throw new Error(message)
@@ -160,12 +160,12 @@ export default function AppointmentsPage() {
               })
 
               if (res.ok) {
-                const created = await res.json()
+                const created = (await res.json()) as Appointment
                 setAppointments((prev) => [created, ...prev])
                 setSuccessMessage('Scheduled appointment.')
                 router.refresh()
               } else {
-                const data = await res.json()
+                const data = (await res.json()) as { error?: string }
                 const message = data.error || 'Failed to create appointment.'
                 setErrorMessage(message)
                 throw new Error(message)

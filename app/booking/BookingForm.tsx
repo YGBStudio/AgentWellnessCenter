@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Agent, Ailment, Therapy } from '@/lib/db/types'
+import type { Agent, Ailment, Appointment, Therapy } from '@/lib/db/types'
 
 export default function BookingForm({
   agents,
@@ -67,7 +67,7 @@ export default function BookingForm({
       })
 
       if (res.ok) {
-        const appointment = await res.json()
+        const appointment = (await res.json()) as Appointment
         setStatus('success')
         // Store basic info in session storage or pass via query params for confirmation page
         const query = new URLSearchParams({
@@ -77,7 +77,7 @@ export default function BookingForm({
         }).toString()
         router.push(`/booking/confirmation?${query}`)
       } else {
-        const data = await res.json()
+        const data = (await res.json()) as { error?: string }
         setStatus('error')
         setErrorMessage(data.error || 'Failed to book appointment')
       }
