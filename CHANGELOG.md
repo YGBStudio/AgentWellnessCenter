@@ -64,3 +64,14 @@
 - feat(ui): add login and access denied pages
 - feat(ui): update resource management pages and components
 - test: update application and auth tests
+
+## 2026-05-18
+- chore(config): update tooling config for Cloudflare deployment
+- chore(deps): add Cloudflare/opennext dependencies and deployment config
+- refactor(db): extract AppDatabase adapter interface with SQLite and D1 implementations
+- refactor(services): make QueryService async via AppDatabase adapter
+- refactor(auth): replace bcrypt with Web Crypto PBKDF2 and update seed
+- refactor(api): adapt route handlers to async QueryService and add force-dynamic
+- feat(ui): add type assertions and minor cleanup in pages
+- test: update tests for async query service and Web Crypto auth
+- docs: add deployment target preparation specs and docs

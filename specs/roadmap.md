@@ -69,3 +69,12 @@ High-level implementation order in small phases:
      - Configure routing, static assets, and caching for preview and production deployments.
      - Ensure preview and production deployments work correctly without manual fixes.
      - **Status:** Implemented for the Workers/OpenNext target as active build/deploy configuration. See `specs/2026-05-17-deployment-target-preparation/`.
+
+8. **Phase 8: Project Documentation Coverage**
+     - Review the existing documentation in the `docs` folder.
+     - Identify missing or incomplete areas of project knowledge that require documentation.
+     - Create and organize markdown documentation for architecture, workflows, setup, implementation details, and operational practices.
+     - Document project architecture, application structure, API integrations, authentication, state management, database persistence, configuration, testing, CI/CD, coding standards, error handling, logging, third-party services, and troubleshooting.
+     - Add diagrams or structured explanations where helpful using markdown-compatible formats.
+     - Update or create a `docs` index/readme that links to all major documentation sections.
+     - **Status:** Planned.
