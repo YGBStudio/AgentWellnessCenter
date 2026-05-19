@@ -75,3 +75,9 @@
 - feat(ui): add type assertions and minor cleanup in pages
 - test: update tests for async query service and Web Crypto auth
 - docs: add deployment target preparation specs and docs
+
+## 2026-05-19
+- docs(specs): add phase 8 project documentation coverage specifications
+- docs: add documentation index and guides for setup, architecture, API/data, auth, development, testing, operations, and troubleshooting
+- docs(roadmap): mark phase 8 project documentation coverage implemented
+- docs(skills): add generalized documentation coverage workflow skill
