@@ -77,4 +77,4 @@ High-level implementation order in small phases:
      - Document project architecture, application structure, API integrations, authentication, state management, database persistence, configuration, testing, CI/CD, coding standards, error handling, logging, third-party services, and troubleshooting.
      - Add diagrams or structured explanations where helpful using markdown-compatible formats.
      - Update or create a `docs` index/readme that links to all major documentation sections.
-     - **Status:** Planned.
+     - **Status:** Implemented. See `specs/2026-05-19-project-documentation-coverage/`.
