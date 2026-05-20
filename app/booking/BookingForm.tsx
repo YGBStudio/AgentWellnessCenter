@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getCurrentDateTimeLocalMinimum } from '@/lib/date'
 import type { Agent, Ailment, Appointment, Therapy } from '@/lib/db/types'
 
 export default function BookingForm({
@@ -14,6 +15,7 @@ export default function BookingForm({
   therapies: Therapy[]
 }) {
   const router = useRouter()
+  const minAppointmentDate = getCurrentDateTimeLocalMinimum()
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
   const missingResources = [
@@ -135,7 +137,7 @@ export default function BookingForm({
 
           <label htmlFor="date">
             Preferred Date &amp; Time
-            <input type="datetime-local" id="date" name="date" required />
+            <input type="datetime-local" id="date" name="date" required min={minAppointmentDate} />
           </label>
         </div>
 

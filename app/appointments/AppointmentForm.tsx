@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { getCurrentDateTimeLocalMinimum } from '@/lib/date'
 import type { Agent, Ailment, Therapy, Appointment } from '@/lib/db/types'
 
 interface AppointmentFormProps {
@@ -22,6 +23,7 @@ export default function AppointmentForm({
 }: AppointmentFormProps) {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const minAppointmentDate = getCurrentDateTimeLocalMinimum()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -91,6 +93,7 @@ export default function AppointmentForm({
         id="date"
         name="date"
         required
+        min={minAppointmentDate}
         defaultValue={appointment?.date}
       />
 

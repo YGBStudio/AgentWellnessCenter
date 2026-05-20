@@ -9,7 +9,7 @@ export default function LoginForm() {
   const router = useRouter()
   const { login } = useAuth()
   const searchParams = useSearchParams()
-  const from = searchParams.get('from') || '/dashboard'
+  const from = getSafeRedirectPath(searchParams.get('from'))
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -33,7 +33,8 @@ export default function LoginForm() {
 
       if (result.success) {
         setStatus('success')
-        router.push(from)
+        router.replace(from)
+        router.refresh()
       } else {
         setStatus('error')
         setErrorMessage(result.error || 'Invalid credentials')
@@ -91,4 +92,12 @@ export default function LoginForm() {
       </p>
     </form>
   )
+}
+
+function getSafeRedirectPath(path: string | null): string {
+  if (!path || !path.startsWith('/') || path.startsWith('//')) {
+    return '/dashboard'
+  }
+
+  return path
 }
