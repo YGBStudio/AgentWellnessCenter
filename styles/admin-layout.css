@@ -10,13 +10,14 @@
   top: var(--awc-header-height, 76px);
   bottom: 0;
   left: 0;
-  z-index: 30;
+  z-index: 45;
   display: flex;
   flex-direction: column;
   width: 260px;
   overflow-y: auto;
   border-right: 1px solid rgba(183, 207, 202, 0.7);
   background: #123331;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.16);
   color: rgba(255, 255, 255, 0.78);
   transition: transform 0.2s ease;
 }
@@ -138,6 +139,13 @@
   background: var(--awc-surface-soft, #eef8f6);
   color: var(--awc-text, #102a2b);
   font-size: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  body:has(.sidebar) .site-footer {
+    width: calc(100% - 260px);
+    margin-left: 260px;
+  }
 }
 
 @media (max-width: 767px) {
