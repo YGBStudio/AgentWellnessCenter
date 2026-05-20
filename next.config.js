@@ -13,6 +13,15 @@ const noStoreHeaders = [
   },
 ]
 
+const noIndexHeaders = [
+  {
+    key: 'X-Robots-Tag',
+    value: 'noindex, nofollow',
+  },
+]
+
+const noStoreNoIndexHeaders = [...noStoreHeaders, ...noIndexHeaders]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   outputFileTracingRoot: path.join(__dirname),
@@ -20,32 +29,36 @@ const nextConfig = {
   async headers() {
     return [
       {
+        source: '/:path*',
+        headers: noIndexHeaders,
+      },
+      {
         source: '/api/:path*',
-        headers: noStoreHeaders,
+        headers: noStoreNoIndexHeaders,
       },
       {
         source: '/dashboard/:path*',
-        headers: noStoreHeaders,
+        headers: noStoreNoIndexHeaders,
       },
       {
         source: '/agents/:path*',
-        headers: noStoreHeaders,
+        headers: noStoreNoIndexHeaders,
       },
       {
         source: '/ailments/:path*',
-        headers: noStoreHeaders,
+        headers: noStoreNoIndexHeaders,
       },
       {
         source: '/therapies/:path*',
-        headers: noStoreHeaders,
+        headers: noStoreNoIndexHeaders,
       },
       {
         source: '/appointments/:path*',
-        headers: noStoreHeaders,
+        headers: noStoreNoIndexHeaders,
       },
       {
         source: '/login',
-        headers: noStoreHeaders,
+        headers: noStoreNoIndexHeaders,
       },
     ]
   },

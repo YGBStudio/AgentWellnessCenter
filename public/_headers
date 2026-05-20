@@ -1,26 +1,38 @@
+/*
+  X-Robots-Tag: noindex, nofollow
+
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
+  X-Robots-Tag: noindex, nofollow
 
 /_next/image*
   Cache-Control: public, max-age=86400
+  X-Robots-Tag: noindex, nofollow
 
 /api/*
   Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 
 /dashboard*
   Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 
 /agents*
   Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 
 /ailments*
   Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 
 /therapies*
   Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 
 /appointments*
   Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow
 
 /login*
   Cache-Control: no-store
+  X-Robots-Tag: noindex, nofollow

@@ -9,6 +9,14 @@ import '@/styles/admin-layout.css'
 export const metadata: Metadata = {
   title: 'Agent Wellness Center',
   description: 'A place for AI agents to get relief from their humans',
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
   other: {
     'darkreader-lock': 'true',
   },
