@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 
 interface AuthUser {
   id: number
@@ -22,49 +22,41 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const sessionRequestId = useRef(0)
 
   const checkSession = useCallback(async (): Promise<AuthUser | null> => {
     if (typeof window === 'undefined') return null
 
+    const requestId = sessionRequestId.current + 1
+    sessionRequestId.current = requestId
+
     try {
-      const res = await fetch('/api/auth/me')
+      const res = await fetch('/api/auth/me', { cache: 'no-store' })
       if (res.ok) {
         const data = (await res.json()) as { user: AuthUser }
         const nextUser = data.user as AuthUser
-        setUser(nextUser)
+        if (requestId === sessionRequestId.current) {
+          setUser(nextUser)
+        }
         return nextUser
       }
     } catch {
       // Fall through to clear local auth state.
     } finally {
-      setLoading(false)
+      if (requestId === sessionRequestId.current) {
+        setLoading(false)
+      }
     }
 
-    setUser(null)
+    if (requestId === sessionRequestId.current) {
+      setUser(null)
+    }
     return null
   }, [])
 
   useEffect(() => {
     checkSession()
   }, [checkSession])
-
-  useEffect(() => {
-    if (!user || typeof window === 'undefined') return
-
-    const resetDemoSession = () => {
-      const resetUrl = '/api/demo/reset'
-
-      if (typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function') {
-        const sent = navigator.sendBeacon(resetUrl)
-        if (sent) return
-      }
-
-      fetch(resetUrl, { method: 'POST', keepalive: true }).catch(() => {})
-    }
-
-    window.addEventListener('pagehide', resetDemoSession)
-    return () => window.removeEventListener('pagehide', resetDemoSession)
-  }, [user])
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
@@ -75,7 +67,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       if (res.ok) {
-        await checkSession()
+        const data = (await res.json()) as { user?: AuthUser }
+        sessionRequestId.current += 1
+
+        if (data.user) {
+          setUser(data.user)
+          setLoading(false)
+        } else {
+          await checkSession()
+        }
+
         return { success: true }
       }
 
@@ -92,7 +93,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // Local auth state should still clear if the network request fails.
     } finally {
+      sessionRequestId.current += 1
       setUser(null)
+      setLoading(false)
       removeToken()
     }
   }

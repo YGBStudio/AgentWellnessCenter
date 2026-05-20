@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { isCurrentOrFutureDateTime } from './date'
 
 // Shared helpers
 export function parseId(id: string): number | null {
@@ -47,12 +48,21 @@ export const updateTherapySchema = z.object({
 
 // Appointment schemas
 export const appointmentStatusEnum = z.enum(['scheduled', 'confirmed', 'in-progress', 'completed', 'cancelled'])
+const appointmentDateError = 'Appointment time must be now or later'
+const appointmentDateSchema = z
+  .string()
+  .min(1, 'Date is required')
+  .refine((date) => date === '' || isCurrentOrFutureDateTime(date), appointmentDateError)
+const optionalAppointmentDateSchema = z
+  .string()
+  .min(1)
+  .refine((date) => date === '' || isCurrentOrFutureDateTime(date), appointmentDateError)
 
 export const createAppointmentSchema = z.object({
   agent_id: z.number().int().positive('Agent ID must be a positive integer'),
   ailment_id: z.number().int().positive('Ailment ID must be a positive integer'),
   therapy_id: z.number().int().positive('Therapy ID must be a positive integer'),
-  date: z.string().min(1, 'Date is required'),
+  date: appointmentDateSchema,
   status: appointmentStatusEnum,
 })
 
@@ -60,7 +70,7 @@ export const updateAppointmentSchema = z.object({
   agent_id: z.number().int().positive().optional(),
   ailment_id: z.number().int().positive().optional(),
   therapy_id: z.number().int().positive().optional(),
-  date: z.string().min(1).optional(),
+  date: optionalAppointmentDateSchema.optional(),
   status: appointmentStatusEnum.optional(),
 })
 
