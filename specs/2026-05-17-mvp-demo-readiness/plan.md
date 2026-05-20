@@ -46,9 +46,10 @@ Close the remaining MVP gaps after Phases 1-5 by improving demo readiness, publi
 
 1. Add helpful booking empty states when agents, ailments, or therapies are unavailable.
 2. Preserve appointment conflict prevention for same agent and same time.
-3. Improve admin CRUD loading, empty, and error states where current screens fall back to alerts or silent failures.
-4. Keep delete blockers clear for agents, ailments, and therapies with existing appointments.
-5. Ensure validation messages remain user-facing and accessible.
+3. Prevent public booking and admin appointment forms from accepting times before the current time.
+4. Improve admin CRUD loading, empty, and error states where current screens fall back to alerts or silent failures.
+5. Keep delete blockers clear for agents, ailments, and therapies with existing appointments.
+6. Ensure validation messages remain user-facing and accessible.
 
 ## 6.7 - Documentation
 
@@ -63,7 +64,7 @@ Close the remaining MVP gaps after Phases 1-5 by improving demo readiness, publi
 2. Add or update tests showing direct protected routes still redirect unauthenticated users.
 3. Add tests proving authenticated users can reach management navigation.
 4. Add seed data tests for deterministic records and idempotent reruns.
-5. Add booking tests for empty data, successful booking, and conflict handling where practical.
+5. Add booking tests for empty data, successful booking, past-time rejection, and conflict handling where practical.
 6. Run `npm test -- --run`.
 7. Run `npm run lint`.
 
@@ -72,10 +73,10 @@ Close the remaining MVP gaps after Phases 1-5 by improving demo readiness, publi
 1. Add a documented server-side `DEMO_MODE=true` configuration helper.
 2. Add a database reset helper that deletes demo-session data, clears reset table sequences, and reseeds the default admin plus deterministic demo data.
 3. Update logout so authenticated admin/staff sessions reset and reseed the database before logout completes when demo mode is enabled.
-4. Add `POST /api/demo/reset` for authenticated best-effort browser/tab exit cleanup.
-5. Add a client `pagehide` cleanup hook that uses `navigator.sendBeacon('/api/demo/reset')` with a `fetch(..., { keepalive: true })` fallback.
+4. Add `POST /api/demo/reset` for authenticated intentional demo cleanup.
+5. Keep authenticated page navigation from invoking demo reset behavior.
 6. Document demo mode in README and the MVP demo guide.
-7. Add tests for disabled-by-default behavior, authenticated reset access, reseeded records, preserved demo credentials, logout reset, and page-exit cleanup wiring.
+7. Add tests for disabled-by-default behavior, authenticated reset access, reseeded records, preserved demo credentials, logout reset, and navigation preservation.
 
 ## Deliverables
 
@@ -102,4 +103,4 @@ Close the remaining MVP gaps after Phases 1-5 by improving demo readiness, publi
 8. Docs explain setup, credentials, walkthrough, and validation.
 9. `npm test -- --run` passes.
 10. `npm run lint` passes.
-11. With `DEMO_MODE=true`, logout and authenticated browser/tab exit reset and reseed demo data for the next session.
+11. With `DEMO_MODE=true`, logout and explicit authenticated reset requests restore seeded demo data without affecting normal authenticated navigation.

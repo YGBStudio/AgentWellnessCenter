@@ -57,7 +57,7 @@ Committed defaults in `wrangler.toml` are non-secret values only. Set secrets th
 |---|---|---|---|---|
 | `JWT_SECRET` | Optional | Required secret | Required secret | Use a long random value. Missing preview/production secrets fail clearly at auth time. |
 | `REQUIRE_JWT_SECRET` | `false` | `true` | `true` | Enforces that preview/production do not use the local demo secret. |
-| `DEMO_MODE` | `true` in Wrangler config | `true` | `false` | Enables demo reset behavior after sessions. |
+| `DEMO_MODE` | `true` in Wrangler config | `true` | `false` | Enables demo reset behavior on logout or explicit reset requests. |
 | `DATABASE_DRIVER` | `d1` | `d1` | `d1` | Documents that Cloudflare uses D1. |
 | `CLOUDFLARE_ACCOUNT_ID` | Optional | Optional | Optional | Useful for local Wrangler account commands. |
 | `DB` | D1 binding | D1 binding | D1 binding | Binding, not a string secret. |

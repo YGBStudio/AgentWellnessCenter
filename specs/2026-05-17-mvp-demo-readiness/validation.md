@@ -33,7 +33,7 @@ The implementation will be considered successful when all of the following crite
 - [ ] `DEMO_MODE=true` enables demo-only reset behavior.
 - [ ] Demo reset endpoints require an authenticated admin/staff session.
 - [ ] Logout resets and reseeds the database when demo mode is enabled.
-- [ ] Authenticated browser/tab exit attempts a best-effort reset when demo mode is enabled.
+- [ ] Normal authenticated navigation does not reset demo data.
 - [ ] Reset data includes the default admin credentials after cleanup.
 - [ ] Reset data includes deterministic agents, ailments, therapies, and appointments after cleanup.
 
@@ -49,6 +49,7 @@ The implementation will be considered successful when all of the following crite
 - [ ] Booking form handles missing agents, ailments, or therapies with a helpful empty state.
 - [ ] Booking success redirects to confirmation with correct appointment details.
 - [ ] Booking validation failures render accessible error messages.
+- [ ] Booking and admin appointment validation reject times before the current time.
 - [ ] CRUD pages show clear loading and empty states.
 - [ ] CRUD delete blockers for related appointments are visible to users.
 - [ ] Admin create/edit/delete flows continue to update visible lists.
@@ -67,7 +68,7 @@ The implementation will be considered successful when all of the following crite
 - [ ] Auth tests cover representative 401 and 403 outcomes.
 - [ ] Seed tests cover required demo records and idempotency.
 - [ ] Demo reset tests cover disabled-by-default behavior, authenticated access, reseeding, and preserved credentials.
-- [ ] Booking tests cover successful booking and conflict handling where practical.
+- [ ] Booking tests cover successful booking, past-time rejection, and conflict handling where practical.
 - [ ] `npm test -- --run` passes.
 - [ ] `npm run lint` passes.
 
@@ -81,7 +82,7 @@ The implementation will be considered successful when all of the following crite
 - [ ] CRUD: create, edit, and delete a record that is safe to delete.
 - [ ] Logout: confirm protected pages require login again.
 - [ ] Demo mode: with `DEMO_MODE=true`, confirm logout leaves fresh seeded data for the next login.
-- [ ] Demo mode: with `DEMO_MODE=true`, confirm closing or leaving an authenticated tab attempts cleanup.
+- [ ] Demo mode: with `DEMO_MODE=true`, confirm booking before login remains visible after login.
 - [ ] Responsive: check 320px, 768px, and 1024px+ widths for no overlapping controls.
 
 ## Definition Of Done

@@ -88,6 +88,6 @@ Read [Auth And Security](auth-and-security.md) for the full auth flow.
 
 ## State Management
 
-The app keeps auth state in `AuthProvider` from `lib/auth/context.tsx`. The provider checks `/api/auth/me`, exposes `login()` and `logout()`, and triggers demo reset behavior on page hide when a user session exists.
+The app keeps auth state in `AuthProvider` from `lib/auth/context.tsx`. The provider checks `/api/auth/me` on load, hydrates state from the login response after sign-in, and exposes `login()` and `logout()`.
 
 Most domain data is loaded server-side through `getRuntimeQueryService()` and refreshed through route navigation or client form submissions.

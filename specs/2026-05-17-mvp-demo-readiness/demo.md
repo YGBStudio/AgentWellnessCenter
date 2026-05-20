@@ -15,7 +15,7 @@ To reset demo clutter automatically between demo sessions, start the app with:
 DEMO_MODE=true npm run dev
 ```
 
-When demo mode is enabled, authenticated logout resets and reseeds the database. Authenticated browser/tab exit also attempts cleanup, but that path is best-effort because browsers limit unload work.
+When demo mode is enabled, authenticated logout resets and reseeds the database. Use the authenticated `/api/demo/reset` endpoint only when you intentionally want to restore the deterministic demo state.
 
 ## Demo Credentials
 

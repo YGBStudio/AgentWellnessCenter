@@ -27,7 +27,7 @@ Phase 6 turns the implemented roadmap into a reliable MVP for demos and for teac
 #### Demo Mode Reset
 - Add an opt-in `DEMO_MODE=true` configuration for demo-only cleanup behavior.
 - When demo mode is enabled, logout resets and reseeds the database so the next demo user starts from a clean state.
-- When demo mode is enabled, authenticated browser/tab exit attempts a best-effort reset using browser lifecycle APIs.
+- Authenticated page navigation, including login redirects, must not reset or reseed demo data.
 - Demo mode is disabled by default and must not affect normal local or production-like usage.
 - Reset behavior preserves the default demo credentials and deterministic seed data after cleanup.
 
@@ -41,6 +41,7 @@ Phase 6 turns the implemented roadmap into a reliable MVP for demos and for teac
 #### Booking And Admin Guardrails
 - Booking handles empty or incomplete seed data with helpful empty states rather than broken forms.
 - Booking continues to prevent duplicate appointments for the same agent and time.
+- Booking and admin appointment forms reject appointment times before the current time.
 - Admin CRUD pages show clear loading, empty, success, and error states.
 - Delete blockers for records with appointments remain clear and user-facing.
 
@@ -67,7 +68,7 @@ Phase 6 turns the implemented roadmap into a reliable MVP for demos and for teac
 7. **Behavior Preservation:** Existing booking, auth, CRUD, and visual behavior should remain intact unless changed by this spec.
 8. **Demo Mode Flag:** Demo cleanup is enabled only when `DEMO_MODE=true` is set server-side.
 9. **Logout Reset:** Authenticated admin/staff logout is the primary deterministic reset trigger in demo mode.
-10. **Page Exit Reset:** Authenticated browser/tab exit uses best-effort cleanup and may be limited by browser unload behavior.
+10. **Navigation Preservation:** Authenticated navigation must preserve in-session booking and CRUD changes until an explicit reset or logout.
 
 ## Context
 
