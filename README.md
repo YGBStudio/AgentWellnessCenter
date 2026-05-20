@@ -89,7 +89,7 @@ For the source-of-truth stack notes, see the [technical stack specification](spe
 ## Agentic Workflow
 
 ```mermaid
-flowchart LR
+flowchart TD
   Intent[Stakeholder Intent] --> Mission[Mission and Tech Stack]
   Mission --> Roadmap[Roadmap Phase]
   Roadmap --> Interview[Agent Interviews User]
@@ -97,8 +97,8 @@ flowchart LR
   Requirements --> Plan[plan.md]
   Plan --> Validation[validation.md]
   Validation --> Implementation[Implementation]
-  Implementation --> Tests[Tests, Lint, Build]
-  Tests --> Docs[Docs, Changelog, Roadmap]
+  Implementation --> Tests[Tests<br/>Lint<br/>Build]
+  Tests --> Docs[Docs<br/>Changelog<br/>Roadmap]
   Docs --> NextPhase[Next Phase]
 ```
 
