@@ -20,14 +20,20 @@ vi.mock('@/lib/services/runtimeQueryService', () => ({
 }))
 
 import { POST as postAgent } from '@/app/api/agents/route'
+import { POST as postAppointment } from '@/app/api/appointments/route'
 import { POST as postBooking } from '@/app/api/booking/route'
 
 const appointmentBody = {
   agent_id: 1,
   ailment_id: 2,
   therapy_id: 3,
-  date: '2026-06-10T11:00',
+  date: '2999-06-10T11:00',
   status: 'scheduled',
+}
+
+const pastAppointmentBody = {
+  ...appointmentBody,
+  date: '2000-01-01T11:00',
 }
 
 function jsonRequest(url: string, body: unknown, headers: Record<string, string> = {}) {
@@ -90,6 +96,38 @@ describe('public booking route', () => {
 
     expect(response.status).toBe(409)
     expect(payload.error).toMatch(/already booked/i)
+    expect(mockQueryService.createAppointment).not.toHaveBeenCalled()
+  })
+
+  it('rejects bookings before the current time', async () => {
+    const response = await postBooking(jsonRequest('http://localhost/api/booking', pastAppointmentBody))
+    const payload = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(payload.error).toMatch(/now or later/i)
+    expect(mockQueryService.checkAppointmentConflict).not.toHaveBeenCalled()
+    expect(mockQueryService.createAppointment).not.toHaveBeenCalled()
+  })
+})
+
+describe('protected appointment route', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockQueryService.createAppointment.mockReturnValue(10)
+    mockQueryService.getAppointmentById.mockReturnValue({ id: 10, ...appointmentBody })
+  })
+
+  it('rejects appointment creates before the current time', async () => {
+    const token = await signToken({ email: 'admin@agentclinic.demo', role: 'admin', userId: 1 })
+    const response = await postAppointment(jsonRequest(
+      'http://localhost/api/appointments',
+      pastAppointmentBody,
+      { cookie: `agentclinic_session=${encodeURIComponent(token)}` }
+    ))
+    const payload = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(payload.error).toMatch(/now or later/i)
     expect(mockQueryService.createAppointment).not.toHaveBeenCalled()
   })
 })

@@ -2,32 +2,28 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import BookingForm from './BookingForm'
+import AppointmentForm from './AppointmentForm'
 import type { Agent, Ailment, Therapy } from '@/lib/db/types'
 
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn() }),
-}))
-
-describe('BookingForm', () => {
+describe('AppointmentForm', () => {
   afterEach(() => {
     vi.useRealTimers()
-  })
-
-  it('shows a helpful empty state when booking prerequisites are unavailable', () => {
-    render(<BookingForm agents={[]} ailments={[]} therapies={[]} />)
-
-    expect(screen.getByRole('status')).toHaveTextContent(/missing agents, ailments, therapies/i)
-    expect(screen.queryByRole('button', { name: /book appointment/i })).not.toBeInTheDocument()
   })
 
   it('does not allow selecting appointment times before now', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2026-05-20T20:30:00Z'))
 
-    render(<BookingForm agents={agents} ailments={ailments} therapies={therapies} />)
+    render(
+      <AppointmentForm
+        agents={agents}
+        ailments={ailments}
+        therapies={therapies}
+        onSubmit={vi.fn()}
+      />
+    )
 
-    expect(screen.getByLabelText(/preferred date/i)).toHaveAttribute('min', '2026-05-20T14:30')
+    expect(screen.getByLabelText(/date & time/i)).toHaveAttribute('min', '2026-05-20T14:30')
   })
 })
 
