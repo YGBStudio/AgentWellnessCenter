@@ -71,7 +71,7 @@ flowchart TD
   AppDatabase --> SQLite[SQLite Test Path]
 ```
 
-Detailed request flow, route groups, auth boundaries, and database diagrams live in [Architecture](docs/architecture.md).
+Detailed request flow, route groups, auth boundaries, and database diagrams live in the [architecture guide](docs/architecture.md).
 
 ## Tech Stack
 
@@ -84,7 +84,7 @@ Detailed request flow, route groups, auth boundaries, and database diagrams live
 | Quality | Vitest, React Testing Library, jsdom, ESLint, TypeScript strict mode |
 | Agentic tooling | ACP IDE extension, `skills/`, `specs/`, Context7 / `find-docs`, `CHANGELOG.md` |
 
-For the source-of-truth stack notes, see [specs/tech-stack.md](specs/tech-stack.md).
+For the source-of-truth stack notes, see the [technical stack specification](specs/tech-stack.md).
 
 ## Agentic Workflow
 
@@ -104,7 +104,7 @@ flowchart LR
 
 The workflow is intentionally explicit: frame work with specs, use ACP-enabled IDE collaboration for agent handoffs, keep changes bounded by the stack, validate completion, and use local skills for recurring operations such as documentation coverage, clean commits, and changelog updates.
 
-For a codebase map, use [docs/README.md](docs/README.md).
+For a codebase map, use the [documentation index and project map](docs/README.md).
 
 ## Getting Started
 
@@ -138,7 +138,7 @@ npm run build
 npm run workers:build
 ```
 
-For full setup, scripts, D1 migration commands, and deployment preparation, use [Getting Started](docs/getting-started.md) and [Cloudflare Workers Deployment](docs/cloudflare-workers-deployment.md).
+For full setup, scripts, D1 migration commands, and deployment preparation, use the [getting started guide](docs/getting-started.md) and [Cloudflare Workers deployment runbook](docs/cloudflare-workers-deployment.md).
 
 ## Usage Examples
 
@@ -154,7 +154,7 @@ For full setup, scripts, D1 migration commands, and deployment preparation, use 
 8. Try deleting a record that has appointments to see the `409` conflict guardrail.
 9. Log out and revisit `/agents` to confirm protected routes redirect to login.
 
-Detailed API, admin, and data behavior lives in [API And Data](docs/api-and-data.md) and [Auth And Security](docs/auth-and-security.md).
+Detailed API, admin, and data behavior lives in the [API and data guide](docs/api-and-data.md) and [auth and security guide](docs/auth-and-security.md).
 
 ## Documentation Map
 
@@ -162,14 +162,14 @@ Use the focused docs for operational depth:
 
 | Document | Use it for |
 |---|---|
-| [docs/README.md](docs/README.md) | Documentation index and project map. |
-| [docs/getting-started.md](docs/getting-started.md) | Install, run, demo credentials, scripts, and first walkthrough. |
-| [docs/architecture.md](docs/architecture.md) | App structure, request flow, auth boundary, database boundary, and deployment shape. |
-| [docs/api-and-data.md](docs/api-and-data.md) | Entities, validation rules, API routes, persistence, seed data, and demo reset behavior. |
-| [docs/auth-and-security.md](docs/auth-and-security.md) | Login/logout, JWT sessions, protected pages, protected write APIs, roles, and secrets. |
-| [docs/development-and-testing.md](docs/development-and-testing.md) | Coding conventions, testing strategy, validation commands, and contribution workflow. |
-| [docs/operations-and-troubleshooting.md](docs/operations-and-troubleshooting.md) | Configuration, environments, errors, logging, CI/CD status, and troubleshooting. |
-| [docs/cloudflare-workers-deployment.md](docs/cloudflare-workers-deployment.md) | OpenNext, Workers, D1, secrets, preview, production, and edge hosting runbook. |
+| [Documentation index](docs/README.md) | Project map and entry point for the docs. |
+| [Getting started guide](docs/getting-started.md) | Install, run, demo credentials, scripts, and first walkthrough. |
+| [Architecture guide](docs/architecture.md) | App structure, request flow, auth boundary, database boundary, and deployment shape. |
+| [API and data guide](docs/api-and-data.md) | Entities, validation rules, API routes, persistence, seed data, and demo reset behavior. |
+| [Auth and security guide](docs/auth-and-security.md) | Login/logout, JWT sessions, protected pages, protected write APIs, roles, and secrets. |
+| [Development and testing guide](docs/development-and-testing.md) | Coding conventions, testing strategy, validation commands, and contribution workflow. |
+| [Operations and troubleshooting guide](docs/operations-and-troubleshooting.md) | Configuration, environments, errors, logging, CI/CD status, and troubleshooting. |
+| [Cloudflare Workers deployment guide](docs/cloudflare-workers-deployment.md) | OpenNext, Workers, D1, secrets, preview, production, and edge hosting runbook. |
 
 ## Lessons Learned And Best Practices
 
@@ -182,7 +182,7 @@ Use the focused docs for operational depth:
 
 ## Contributing And Working With This Project As An Agent
 
-If you are a human contributor or an AI coding agent, start with `docs/README.md`, `specs/mission.md`, `specs/tech-stack.md`, `specs/roadmap.md`, and the relevant dated spec directory under `specs/`.
+If you are a human contributor or an AI coding agent, start with the [documentation index](docs/README.md), [project mission](specs/mission.md), [technical stack](specs/tech-stack.md), [delivery roadmap](specs/roadmap.md), and the relevant dated spec directory under `specs/`.
 
 Keep changes scoped, preserve the established architecture boundaries, verify library behavior with Context7 / `find-docs` when relevant, and run the appropriate checks before calling work done. When history changes, use `skills/update-changelog.md`; when preparing commits, follow `skills/clean-commits.md`.
 
