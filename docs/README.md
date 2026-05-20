@@ -28,13 +28,22 @@ Agent Wellness Center is a full-stack Next.js demo app for scheduling care sessi
 
 ## Common Commands
 
+Run locally with the Cloudflare Worker preview:
+
 ```bash
 npm ci
-npm run dev
+npm run workers:preview
+```
+
+Validate changes:
+
+```bash
 npm test -- --run
 npm run lint
 npm run build
 npm run workers:build
 ```
+
+`npm run workers:preview` is the canonical local runtime because it builds the OpenNext Cloudflare Worker before starting the local preview. Use `npm run dev` only as a fast Next.js development loop.
 
 For deployment-specific commands and Cloudflare setup, use the [Cloudflare Workers Deployment](cloudflare-workers-deployment.md) runbook.

@@ -21,6 +21,8 @@ Use these settings when configuring Workers builds:
 
 The version-controlled source of truth is `wrangler.toml`, with OpenNext defaults in `open-next.config.ts`. Generated output stays out of git through `.gitignore`, including `.next`, `.open-next`, `.wrangler`, and local SQLite files.
 
+The `workers:preview` and `workers:deploy` scripts both run a fresh `workers:build` first, so they use current OpenNext Worker output.
+
 ## Runtime And Data
 
 Preview and production deployments use Cloudflare D1. The local SQLite adapter remains available for unit tests and portable data experiments, but deployed request code reads the D1 binding through OpenNext's `getCloudflareContext()`.
@@ -78,14 +80,19 @@ npm run lint
 npm run build
 ```
 
-Run the Workers/OpenNext build and optional local runtime preview:
+Run the Workers/OpenNext build for build-only validation:
 
 ```bash
 npm run workers:build
+```
+
+Run the local Workers runtime preview when you need to exercise Cloudflare bindings, assets, and D1 behavior:
+
+```bash
 npm run workers:preview
 ```
 
-`npm run dev` still uses the Next.js dev server. `next.config.js` initializes the OpenNext Cloudflare development helper so server code can read local D1 bindings during development.
+`npm run workers:preview` runs `npm run workers:build` before starting preview, so you do not need to run both commands unless you also want a separate build-only check. `npm run dev` is only the fast Next.js development server; `next.config.js` initializes the OpenNext Cloudflare development helper so server code can read local D1 bindings during development.
 
 ## Caching And Assets
 

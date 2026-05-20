@@ -7,7 +7,7 @@ This guide gets Agent Wellness Center running locally and gives you the core com
 - Node.js compatible with the project dependencies.
 - npm, using the checked-in `package-lock.json`.
 - A terminal in the project root.
-- Wrangler access only when you are working with Cloudflare D1, Workers preview, or deployment.
+- The Wrangler CLI comes from project dependencies. Cloudflare account access is only needed when creating remote D1 databases, setting secrets, or deploying.
 
 ## Install
 
@@ -20,12 +20,20 @@ npm ci
 ## Run Locally
 
 ```bash
+npm run workers:preview
+```
+
+This is the canonical local runtime for the project. The script runs `npm run workers:build` first, then starts the OpenNext Cloudflare preview with the Worker entry point, static assets, D1 binding, and local variables from `wrangler.toml`.
+
+Open the URL printed by the preview command.
+
+## Fast Next.js Development
+
+```bash
 npm run dev
 ```
 
-The Next.js dev server starts the App Router application. In development, `next.config.js` initializes the OpenNext Cloudflare development helper so server code can read Cloudflare-style bindings when they are available.
-
-Open the local URL printed by Next.js, usually `http://localhost:3000`.
+Use this only for fast iteration on pages, styles, and route logic. It starts the Next.js development server; `next.config.js` initializes the OpenNext Cloudflare development helper so server code can read Cloudflare-style bindings when they are available. Confirm Cloudflare-specific behavior with `npm run workers:preview`.
 
 ## Demo Credentials
 
@@ -52,15 +60,15 @@ These credentials are for classroom and demo use. Preview and production deploym
 
 | Command | Purpose |
 |---|---|
-| `npm run dev` | Start the Next.js development server. |
+| `npm run dev` | Start the fast Next.js development server; secondary to Workers preview. |
 | `npm test -- --run` | Run the Vitest suite once. |
 | `npm run test` | Run Vitest in watch mode. |
 | `npm run test:ui` | Run the Vitest UI. |
 | `npm run test:coverage` | Run tests with coverage reporting. |
 | `npm run lint` | Run ESLint. |
 | `npm run build` | Build the Next.js app. |
-| `npm run workers:build` | Build the OpenNext Cloudflare Worker output. |
-| `npm run workers:preview` | Build and run a local Workers preview. |
+| `npm run workers:build` | Build the OpenNext Cloudflare Worker output without starting preview. |
+| `npm run workers:preview` | Build fresh OpenNext Worker output and run the local Workers preview. |
 | `npm run workers:deploy` | Build and deploy the production Worker. |
 | `npm run d1:migrate:local` | Apply D1 migrations to the local D1 database. |
 | `npm run d1:migrate:preview` | Apply D1 migrations to the preview D1 database. |
@@ -73,10 +81,10 @@ For a quick student exercise:
 
 ```bash
 npm ci
-npm run dev
+npm run workers:preview
 ```
 
-Then make a small change, run:
+After stopping the preview, make a small change and run:
 
 ```bash
 npm test -- --run
@@ -92,7 +100,7 @@ npm run build
 npm run workers:build
 ```
 
-Use [Cloudflare Workers Deployment](cloudflare-workers-deployment.md) before running preview or production deployments.
+Use [Cloudflare Workers Deployment](cloudflare-workers-deployment.md) before running remote preview or production deployments.
 
 ## Where To Go Next
 

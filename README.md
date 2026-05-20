@@ -110,10 +110,10 @@ For a codebase map, use the [documentation index and project map](docs/README.md
 
 ```bash
 npm ci
-npm run dev
+npm run workers:preview
 ```
 
-Open the local URL printed by Next.js, usually `http://localhost:3000`.
+`npm run workers:preview` runs the OpenNext Cloudflare build first, then starts the local Workers preview. Open the URL printed by the preview command.
 
 Demo credentials:
 
@@ -123,11 +123,7 @@ Demo credentials:
 | Password | `admin` |
 | Role | `admin` |
 
-For disposable classroom or booth demos, enable reset behavior:
-
-```bash
-DEMO_MODE=true npm run dev
-```
+For disposable classroom or booth demos, the local Workers preview already uses `DEMO_MODE=true` from `wrangler.toml`.
 
 Validate the project:
 
