@@ -81,3 +81,14 @@
 - docs: add documentation index and guides for setup, architecture, API/data, auth, development, testing, operations, and troubleshooting
 - docs(roadmap): mark phase 8 project documentation coverage implemented
 - docs(skills): add generalized documentation coverage workflow skill
+- chore(config): remove README from gitignore and ignore prompts.md
+- chore(config): add noindex headers and robots metadata
+- feat(ui): redesign footer with credit link and fix sidebar layering
+- docs: improve README link text clarity
+- test: add footer and SEO headers tests
+- docs: update workflow diagram to vertical layout
+- docs: promote workers:preview as canonical local runtime
+- fix: prevent auth race conditions, add date validation, hydrate login
+- feat(ui): add min date to appointment inputs and safe redirect on login
+- test: add past-time rejection, auth hydration, and date utility tests
+- docs: update auth flow, demo mode, and appointment guardrails specs
