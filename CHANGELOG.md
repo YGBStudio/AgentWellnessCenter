@@ -65,6 +65,17 @@
 - feat(ui): update resource management pages and components
 - test: update application and auth tests
 
+## 2026-05-17
+- feat(ui): implement responsive navbar and visual design system
+- test: migrate auth tests from require to imports and improve type safety
+- docs: add visual revamp specification
+- feat(db): add deterministic demo seed data
+- feat(api): add demo reset endpoint and improve route handler auth
+- feat(ui): wire admin layout into management pages and improve CRUD UX
+- refactor(auth): improve login/logout flow and add demo session cleanup
+- test: add tests for demo seed, middleware, api routes, and auth context
+- docs: add MVP demo readiness spec and update roadmap
+
 ## 2026-05-18
 - chore(config): update tooling config for Cloudflare deployment
 - chore(deps): add Cloudflare/opennext dependencies and deployment config
@@ -75,6 +86,7 @@
 - feat(ui): add type assertions and minor cleanup in pages
 - test: update tests for async query service and Web Crypto auth
 - docs: add deployment target preparation specs and docs
+- docs(skills): update CHANGELOG and roadmap with deployment target phase
 
 ## 2026-05-19
 - docs(specs): add phase 8 project documentation coverage specifications
@@ -92,3 +104,6 @@
 - feat(ui): add min date to appointment inputs and safe redirect on login
 - test: add past-time rejection, auth hydration, and date utility tests
 - docs: update auth flow, demo mode, and appointment guardrails specs
+
+## 2026-05-20
+- docs: clarify D1 setup
