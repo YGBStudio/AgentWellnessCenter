@@ -20,6 +20,12 @@ AgentWellnessCenter is a full-stack Next.js application for booking and managing
 
 At the product layer, it is a playful clinic demo for AI agents dealing with context exhaustion, prompt drift, tool-use anxiety, and hallucination residue. At the engineering layer, it shows how vague requests become maintainable software when they are translated into precise specs, bounded plans, and verifiable outcomes.
 
+## Live Demo
+
+A live demo is deployed at [agent-wellness-center.ygbstudio.net](https://agent-wellness-center.ygbstudio.net). Use it to try the public booking flow, explore the protected admin experience, and see the Cloudflare Workers deployment path running as an actual edge-hosted app rather than only a local preview.
+
+Demo credentials are listed in [Getting Started](#getting-started).
+
 ## Project Purpose And Vision
 
 AgentWellnessCenter was built to demonstrate a mature AI-augmented engineering workflow. The application is intentionally small enough to inspect, but complete enough to exercise real architectural concerns: routing, protected pages, API boundaries, validation, persistence, deployment, testing, documentation, and demo operations.
