@@ -107,3 +107,4 @@
 
 ## 2026-05-20
 - docs: clarify D1 setup
+- docs: add live demo link to README
