@@ -26,7 +26,7 @@ For detailed Workers setup and deployment steps, use [Cloudflare Workers Deploym
 | `DATABASE_DRIVER` | `d1` | `d1` | `d1` | Documents the active runtime database path. |
 | `CLOUDFLARE_ACCOUNT_ID` | Optional | Optional | Optional | Useful for Wrangler account commands. |
 
-Do not commit real secrets. `database_id` values in `wrangler.toml` are account-specific configuration, not secrets.
+Do not commit real secrets. `database_id` values in `wrangler.toml` are account-specific configuration, not secrets. The public upstream branch should keep placeholder IDs; copy real D1 IDs only into a private fork, private deployment branch, or local-only branch.
 
 ## Deployment Summary
 
@@ -42,8 +42,8 @@ Use `npm run workers:preview` as the canonical local runtime. It runs a fresh `n
 
 Before remote preview or production deployment:
 
-1. Create or select the D1 databases.
-2. Replace placeholder D1 `database_id` values in `wrangler.toml`.
+1. Create or select the D1 databases with `npx wrangler@latest d1 create agentclinic-local`, `agentclinic-preview`, and `agentclinic-production`.
+2. Replace placeholder D1 `database_id` values in `wrangler.toml` on a private/local deployment branch, not on the public upstream branch.
 3. Set `JWT_SECRET` for preview and production.
 4. Run migrations where needed.
 5. Run the validation commands from [Cloudflare Workers Deployment](cloudflare-workers-deployment.md).

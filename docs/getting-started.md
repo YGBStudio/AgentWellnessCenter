@@ -7,7 +7,7 @@ This guide gets Agent Wellness Center running locally and gives you the core com
 - Node.js compatible with the project dependencies.
 - npm, using the checked-in `package-lock.json`.
 - A terminal in the project root.
-- The Wrangler CLI comes from project dependencies. Cloudflare account access is only needed when creating remote D1 databases, setting secrets, or deploying.
+- The Wrangler CLI comes from project dependencies. Cloudflare account access is only needed when creating remote D1 databases, setting secrets, or deploying. The public `wrangler.toml` uses placeholder D1 database IDs; real IDs belong in a private fork, private deployment branch, or local-only branch.
 
 ## Install
 
@@ -100,7 +100,7 @@ npm run build
 npm run workers:build
 ```
 
-Use [Cloudflare Workers Deployment](cloudflare-workers-deployment.md) before running remote preview or production deployments.
+Use [Cloudflare Workers Deployment](cloudflare-workers-deployment.md) before running remote preview or production deployments. That runbook includes the required `npx wrangler@latest d1 create ...` commands and the rule that real D1 IDs stay out of public upstream commits.
 
 ## Where To Go Next
 

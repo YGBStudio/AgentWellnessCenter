@@ -35,13 +35,19 @@ npm run d1:migrate:preview
 npm run d1:migrate:production
 ```
 
-Create separate D1 databases for local preview, Cloudflare preview, and production, then replace the placeholder `database_id` values in `wrangler.toml`. Database IDs are not secrets, but they are account-specific deployment configuration.
+The public repository keeps placeholder `database_id` values in `wrangler.toml`. Create separate D1 databases for local preview, Cloudflare preview, and production in the Cloudflare account that will run the app, then copy the returned UUIDs into a private deployment branch or local working copy. Do not commit real database IDs back to the public upstream branch.
 
 ```bash
-wrangler d1 create agentclinic-local
-wrangler d1 create agentclinic-preview
-wrangler d1 create agentclinic-production
+npx wrangler@latest d1 create agentclinic-local
+npx wrangler@latest d1 create agentclinic-preview
+npx wrangler@latest d1 create agentclinic-production
 ```
+
+Each command creates a remote D1 database and prints the binding configuration that contains the real `database_id`. If Wrangler offers to update the config automatically, only accept that change on a private fork, private deployment branch, or local-only branch. Otherwise, copy the UUIDs manually into the matching `[[d1_databases]]`, `[[env.preview.d1_databases]]`, and `[[env.production.d1_databases]]` blocks.
+
+`agentclinic-local` is still a Cloudflare D1 database used to identify the default `DB` binding. Wrangler's default local development mode stores data under local `.wrangler` state unless you explicitly run commands with remote flags.
+
+Database IDs are not secrets, but they are account-specific deployment configuration. `JWT_SECRET` and any future API tokens are secrets and must stay in Wrangler secrets or ignored local env files.
 
 | Environment | D1 database name | Wrangler env |
 |---|---|---|
@@ -51,7 +57,7 @@ wrangler d1 create agentclinic-production
 
 ## Environment Variables And Secrets
 
-Committed defaults in `wrangler.toml` are non-secret values only. Set secrets through Wrangler or the Cloudflare dashboard, never in committed files.
+Committed defaults in `wrangler.toml` are non-secret values only. In the public upstream branch, D1 `database_id` values should remain placeholders. Set secrets through Wrangler or the Cloudflare dashboard, never in committed files.
 
 | Name | Local | Preview | Production | Notes |
 |---|---|---|---|---|
