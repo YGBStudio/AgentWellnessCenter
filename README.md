@@ -153,7 +153,7 @@ For full setup, scripts, D1 migration commands, and deployment preparation, use 
 5. Log in with `admin@agentclinic.demo` / `admin`.
 6. Open `/dashboard`.
 7. Manage Agents, Appointments, Ailments, and Therapies from the admin sidebar.
-8. Try deleting a record that has appointments to see the `409` conflict guardrail.
+8. Try deleting an agent that has appointments to see the `409` conflict guardrail.
 9. Log out and revisit `/agents` to confirm protected routes redirect to login.
 
 Detailed API, admin, and data behavior lives in the [API and data guide](docs/api-and-data.md) and [auth and security guide](docs/auth-and-security.md).
