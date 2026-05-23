@@ -39,7 +39,7 @@ The project proves a central idea:
 | Dimension | Demonstrated by |
 |---|---|
 | Spec-driven planning | `specs/mission.md`, `specs/tech-stack.md`, `specs/roadmap.md`, and dated phase directories with `requirements.md`, `plan.md`, and `validation.md`. |
-| Agent orchestration | ACP-enabled IDE collaboration, reusable workflow skills in `skills/`, prompt history in `prompts.md`, and explicit instructions for interviewing, validating, documenting, and committing. |
+| Agent orchestration | ACP-enabled IDE collaboration, reusable workflow skills in `.agents/skills/`, prompt history in `prompts.md`, and explicit instructions for interviewing, validating, documenting, and committing. |
 | Architecture discipline | A narrow `QueryService` data boundary, explicit database adapters, centralized validation, separated auth helpers, and protected route middleware. |
 | Delivery discipline | Vitest coverage, lint/build commands, Cloudflare Workers build scripts, deployment runbooks, and changelog practice. |
 | Teaching value | Docs and specs help students and demo presenters understand both the app and the process used to create it. |
@@ -88,7 +88,7 @@ Detailed request flow, route groups, auth boundaries, and database diagrams live
 | Auth and validation | `jose`, Web Crypto PBKDF2, HttpOnly JWT session cookie, Zod |
 | Edge infrastructure | Cloudflare Workers, OpenNext Cloudflare, Wrangler, Workers Static Assets |
 | Quality | Vitest, React Testing Library, jsdom, ESLint, TypeScript strict mode |
-| Agentic tooling | ACP IDE extension, `skills/`, `specs/`, Context7 / `find-docs`, `CHANGELOG.md` |
+| Agentic tooling | ACP IDE extension, `.agents/skills/`, `specs/`, Context7 / `find-docs`, `CHANGELOG.md` |
 
 For the source-of-truth stack notes, see the [technical stack specification](specs/tech-stack.md).
 
@@ -186,7 +186,7 @@ Use the focused docs for operational depth:
 
 If you are a human contributor or an AI coding agent, start with the [documentation index](docs/README.md), [project mission](specs/mission.md), [technical stack](specs/tech-stack.md), [delivery roadmap](specs/roadmap.md), and the relevant dated spec directory under `specs/`.
 
-Keep changes scoped, preserve the established architecture boundaries, verify library behavior with Context7 / `find-docs` when relevant, and run the appropriate checks before calling work done. When history changes, use `skills/update-changelog.md`; when preparing commits, follow `skills/clean-commits.md`.
+Keep changes scoped, preserve the established architecture boundaries, verify library behavior with Context7 / `find-docs` when relevant, and run the appropriate checks before calling work done. When history changes, use `.agents/skills/update-changelog.md`; when preparing commits, follow `.agents/skills/clean-commits.md`.
 
 ## License And Acknowledgments
 
@@ -197,4 +197,4 @@ Acknowledgments:
 - Next.js, React, TypeScript, PicoCSS, Zod, Vitest, and Testing Library for the application foundation.
 - Cloudflare Workers, D1, Wrangler, and OpenNext Cloudflare for the edge-hosted deployment path.
 - Context7 / `find-docs` style documentation lookup for keeping agent-assisted implementation aligned with current library behavior.
-- The spec-driven and agentic development practices captured in `specs/`, `skills/`, `docs/`, and `prompts.md`.
+- The spec-driven and agentic development practices captured in `specs/`, `.agents/skills/`, `docs/`, and `prompts.md`.
