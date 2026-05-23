@@ -111,3 +111,6 @@
 
 ## 2026-05-21
 - docs: clarify demo step to mention deleting an agent
+
+## 2026-05-22
+- chore(skills): move skills to .agents/skills/ and update README paths
